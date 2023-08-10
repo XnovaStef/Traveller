@@ -18,6 +18,8 @@ import Reservation from './src/screens/reservation';
 import Location from './src/screens/Location';
 import ProfilScreen from './src/screens/profilScreen';
 import ProfilScreenCompany from './src/screens/profilScreenCompany';
+import CocarScreen from './src/screens/CoCar';
+import LoginPass from './src/screens/LoginPass';
 
 
 const Stack = createStackNavigator();
@@ -43,6 +45,8 @@ export default function App() {
         <Stack.Screen name="Location" component={Location} />
         <Stack.Screen name="Profil" component={ProfilScreen} />
         <Stack.Screen name="ProfilCompany" component={ProfilScreenCompany} />
+        <Stack.Screen name="Cocar" component={CocarScreen} />
+        <Stack.Screen name="Pass" component={LoginPass} />
         
       </Stack.Navigator>
     </NavigationContainer>

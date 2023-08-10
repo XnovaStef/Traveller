@@ -21,8 +21,8 @@ export default function LoginUser() {
     navigation.navigate("RegisterUser");
   };
 
-  const HomeUser = () =>{
-    navigation.navigate("HomeUser");
+  const Reservation = () =>{
+    navigation.navigate("Reservation");
 };
 
   const dismissKeyboard = () => {
@@ -36,7 +36,7 @@ export default function LoginUser() {
     setTimeout(() => {
       setLoading(false);
       // Continue with login logic or navigation
-      HomeUser()
+      Reservation()
     }, 2000);
 
     

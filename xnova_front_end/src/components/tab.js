@@ -10,7 +10,7 @@ const Navbar = () => {
   const iconData = [
     { name: 'clock', color: '#000', screenName: 'Reservation', label: 'History' },
     { name: 'home', color: '#000', screenName: 'Reservation', label: 'Services' },
-    { name: 'file-text', color: '#000', screenName: 'Reservation', label: 'Ticket' },
+    { name: 'file-text', color: '#000', screenName: 'Pass', label: 'Ticket' },
     { name: 'user', color: '#000', screenName: 'Profil', label: 'profil' },
   ];
 

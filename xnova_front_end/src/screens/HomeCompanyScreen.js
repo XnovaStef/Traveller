@@ -6,6 +6,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Navbar1 from '../components/tab1';
 import { StatusBar } from 'expo-status-bar';
 import Nav from '../components/nav';
+import Background from '../components/background';
 
 export default function HomeCompanyScreen() {
 
