@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     right: 7,
     borderRadius: 20,
     height: 65,
+   
   },
   iconContainer: {
     flex: 1,

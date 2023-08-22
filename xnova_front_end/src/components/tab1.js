@@ -10,8 +10,8 @@ const Navbar1 = () => {
   const iconData = [
     { name: 'clock', color: '#000', screenName: '', label: 'History' },
     { name: 'heart', color: '#000', screenName: '', label: 'note' },
-    { name: 'home', color: '#000', screenName: '', label: 'home' },
-    { name: 'bar-chart-2', color: '#000', screenName: '', label: 'statistique' },
+    { name: 'home', color: '#000', screenName: 'HomeCompany', label: 'home' },
+    { name: 'bar-chart-2', color: '#000', screenName: 'Statistic', label: 'statistique' },
   ];
 
   const handleIconPress = (iconName, screenName) => {

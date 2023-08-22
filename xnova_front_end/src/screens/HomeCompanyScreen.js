@@ -42,18 +42,18 @@ const styles = StyleSheet.create({
   
  },
  searchBar: {
-  height: 30,
-  width: '80%',
+  height: 40,
+  width: '90%',
   borderRadius: 15,
   backgroundColor: '#fff',
-  color: '#ffffff',
+  color: '#000',
   paddingHorizontal: 10,
   marginBottom: -70,
   shadowOpacity: 0.5,
 shadowColor:'#000',
 shadowOffset: { width: 0, height: 3 },
 elevation: 4,
-top:10,
-marginLeft:35
+top:30,
+marginLeft:20
 },
 });
