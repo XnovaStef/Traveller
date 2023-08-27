@@ -8,8 +8,7 @@ const Navbar1 = () => {
   const [selectedIcon, setSelectedIcon] = useState('home'); // Set 'home' as the default selected icon
 
   const iconData = [
-    { name: 'clock', color: '#000', screenName: '', label: 'History' },
-    { name: 'heart', color: '#000', screenName: '', label: 'note' },
+    { name: 'heart', color: '#000', screenName: 'note', label: 'note' },
     { name: 'home', color: '#000', screenName: 'HomeCompany', label: 'home' },
     { name: 'bar-chart-2', color: '#000', screenName: 'Statistic', label: 'statistique' },
   ];

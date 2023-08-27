@@ -5,23 +5,24 @@ import { useNavigation } from '@react-navigation/native';
 import Navbar1 from '../components/tab1';
 import { StatusBar } from 'expo-status-bar';
 import Nav from '../components/nav';
+import Navbar from '../components/tab';
 
-export default function HomeCompanyScreen() {
+export default function HistoryScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [page, setPage] = useState(1);
   const [searchDate, setSearchDate] = useState('');
-  const [searchStation, setSearchStation] = useState(''); // Add searchStation state
+  const [searchCompany, setSearchCompany] = useState(''); // Add searchStation state
 
   // Simulated transaction history data
   const simulatedTransactionData = [
-    { id: '1', nature: 'Paiement', date: '2023-08-01', gare: 'Marcory' },
-    { id: '2', nature: 'Paiement', date: '2023-08-02', gare: 'Koumassi' },
-    {id:'3', nature: 'Réservation',date: '2023-08-02', gare: 'Cocody'},
-    {id:'4', nature: 'Réservation',date: '2023-08-02', gare: 'Adjamé'},
-    {id:'5', nature: 'Réservation',date: '2023-08-02', gare: 'Port-Bouet'},
-    {id:'6', nature: 'Paiement',date: '2023-08-02', gare: 'Anyama'},
-    {id:'7', nature: 'Paiement',date: '2023-08-02', gare: 'Treichville'},
+    { id: '1', nature: 'Paiement', date: '2023-08-01', gare: 'Marcory', compagnie:'SBTA' },
+    { id: '2', nature: 'Paiement', date: '2023-08-02', gare: 'Koumassi', compagnie:'SBTA' },
+    {id:'3', nature: 'Réservation',date: '2023-08-02', gare: 'Cocody', compagnie:'UTB'},
+    {id:'4', nature: 'Réservation',date: '2023-08-02', gare: 'Adjamé', compagnie:'UTRACO'},
+    {id:'5', nature: 'Réservation',date: '2023-08-02', gare: 'Port-Bouet', compagnie:'SBTA'},
+    {id:'6', nature: 'Paiement',date: '2023-08-02', gare: 'Anyama', compagnie:'CTE'},
+    {id:'7', nature: 'Paiement',date: '2023-08-02', gare: 'Treichville', compagnie:'SBTA'},
     // Add more simulated transaction items here
   ];
 
@@ -45,15 +46,14 @@ export default function HomeCompanyScreen() {
   // Update the transaction filter logic to include date and station
   const filteredTransactionHistory = transactionHistory.filter(item => {
     const isDateMatched = !searchDate || item.date === searchDate;
-    const isStationMatched = !searchStation || item.gare.toLowerCase().includes(searchStation.toLowerCase());
-    return isDateMatched && isStationMatched;
+    const isCompanyMatched = !searchCompany || item.compagnie.toLowerCase().includes(searchCompany.toLowerCase());
+    return isDateMatched && isCompanyMatched;
   });
 
   return (
     <View style={styles.global}>
       <StatusBar style='dark' />
-      <Navbar1 />
-      <Nav />
+      <Navbar />
       <TextInput
         style={styles.searchBar}
         placeholder="Filtrer par date (YYYY-MM-DD)"
@@ -63,10 +63,10 @@ export default function HomeCompanyScreen() {
       />
       <TextInput
         style={styles.searchBar}
-        placeholder="Filtrer par gare"
+        placeholder="Filtrer par compagnie"
         placeholderTextColor="#000"
-        value={searchStation}
-        onChangeText={text => setSearchStation(text)}
+        value={searchCompany}
+        onChangeText={text => setSearchCompany(text)}
       />
       <ScrollView
         style={styles.scrollView}
@@ -78,6 +78,7 @@ export default function HomeCompanyScreen() {
             <Text style={styles.text}>Nature: {item.nature}</Text>
             <Text style={styles.text}>Date: {item.date}</Text>
             <Text style={styles.text}>Gare: {item.gare}</Text>
+            <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
           </View>
         ))}
       </ScrollView>

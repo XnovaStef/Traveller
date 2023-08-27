@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#246EC3",
+    backgroundColor: "#fff",
     marginVertical: 10,
     borderRadius: 10,
     shadowColor: "#000",
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   image: {
-    height: "30%", // Adjust the percentage as needed for the desired image size
+    height: "80%", // Adjust the percentage as needed for the desired image size
     aspectRatio: 1, // Ensure the image maintains its aspect ratio (square)
     borderRadius: 10,
   },
   label: {
-    marginTop: 5,
+    marginTop: 0,
     textAlign: "center",
-    color: "#fff",
+    color: "#246EC3",
     fontSize: 16,
     fontWeight: "bold",
   },

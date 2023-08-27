@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import the FontAwesome icon
 import { BarChart } from 'react-native-chart-kit';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function WeekFilter() {
   const [showDatePicker, setShowDatePicker] = useState(false); // Moved useState inside the component
+
+  const message= () =>{
+    Alert.alert('Veuillez contacter la direction pour plus de détail')
+  }
 
   const paymentData = [
     100, 200, 150, 300, 250, 180, 280, 220, 350, 120,
@@ -30,7 +34,7 @@ export default function WeekFilter() {
       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Icon name="calendar" size={30} color="#246EC3" style={styles.calendarIcon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <TouchableOpacity onPress={message}>
           <Icon name="plus" size={30} color="#246EC3" style={styles.plusIcon} />
         </TouchableOpacity>
         <Text style={styles.title}>Statistiques paiements</Text>
@@ -54,6 +58,9 @@ export default function WeekFilter() {
       <View style={styles.header}>
       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Icon name="calendar" size={30} color="#246EC3" style={styles.calendarIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={message}>
+          <Icon name="plus" size={30} color="#246EC3" style={styles.plusIcon} />
         </TouchableOpacity>
         <Text style={styles.title1}>Statistiques réservations</Text>
       </View>

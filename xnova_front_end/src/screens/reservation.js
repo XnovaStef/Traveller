@@ -22,10 +22,10 @@ const [searchQuery, setSearchQuery] = useState('');
 
 
 const services = [
-    { label: "Voyages", image: require('../assets/images/pay.jpg'), action: () => navigation.navigate("FilterUser") },
-    { label: "Location", image: require('../assets/images/pay.jpg'), action: () => navigation.navigate("Location")  },
+    { label: "Voyages", image: require('../assets/images/Voyages.jpg'), action: () => navigation.navigate("FilterUser") },
+    { label: "Location", image: require('../assets/images/Location.jpg'), action: () => navigation.navigate("Location")  },
     { label: "Colis", image: require('../assets/images/pay.jpg'), action: () =>Alert.alert('Service non disponible')  },
-    { label: "VTC", image: require('../assets/images/pay.jpg'), action: () => navigation.navigate("Cocar")  },
+    { label: "VTC", image: require('../assets/images/VTC.jpg'), action: () => navigation.navigate("Cocar")  },
 
     
   ];

@@ -13,7 +13,6 @@ import RegisterScreenCompany3 from './src/screens/RegisterCompany3';
 import HomeCompanyScreen from './src/screens/HomeCompanyScreen';
 import LoginCompany from './src/screens/LoginCompany';
 import ChooseScreen1 from './src/screens/choix1';
-import HomeUserScreen from './src/screens/FilterUser';
 import Reservation from './src/screens/reservation';
 import Location from './src/screens/Location';
 import ProfilScreen from './src/screens/profilScreen';
@@ -30,7 +29,13 @@ import LogoScreen from './src/screens/LogoChange';
 import FilterScreen from './src/screens/FilterUser';
 import DayFilter from './src/components/DayFilter';
 import WeekFilter from './src/components/WeekFilter';
-
+import NoteScreen from './src/screens/NoteScreen';
+import HistoryScreen from './src/screens/HistoryUser';
+import Filter from './src/screens/Filter';
+import PayScreen from './src/screens/PayScreen';
+import VoyagesScreen from './src/screens/VoyageScreen';
+import ColisScreen from './src/screens/ColiScreen';
+import ReservScreen from './src/screens/ReservScreen';
 
 const Stack = createStackNavigator();
 
@@ -66,6 +71,14 @@ export default function App() {
         <Stack.Screen name="Logo" component={LogoScreen} />
         <Stack.Screen name="Day" component={DayFilter} />
         <Stack.Screen name="Week" component={WeekFilter} />
+        <Stack.Screen name="note" component={NoteScreen} />
+        <Stack.Screen name="history" component={HistoryScreen} />
+        <Stack.Screen name="Filter" component={Filter} />
+        <Stack.Screen name="Pay" component={PayScreen} />
+        <Stack.Screen name="Voyages" component={VoyagesScreen} />
+        <Stack.Screen name="Colis" component={ColisScreen} />
+        <Stack.Screen name="Reserv" component={ReservScreen} />
+        
         
       </Stack.Navigator>
     </NavigationContainer>
