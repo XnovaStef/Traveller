@@ -49,7 +49,7 @@ export default function Pop_Up() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
-            <Text style={styles.checkboxText}>Choisir et continuer</Text>
+            <Text style={styles.checkboxText}>continuer</Text>
             {isChecked ? (
               <Ionicons name="checkbox-outline" size={24} color="#F36210" />
             ) : (
