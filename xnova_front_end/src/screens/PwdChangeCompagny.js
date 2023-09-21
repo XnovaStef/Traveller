@@ -4,10 +4,12 @@ import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextIn
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function PwdCompagny() {
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [mdp, setMdp] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Simulating some loading time with useEffect
@@ -21,10 +23,38 @@ export default function PwdCompagny() {
     }
   }, [loading]);
 
-  const handleVerification = () => {
-    // Perform your verification logic here
-    setLoading(true);
-  };
+  const handlemodif = () => {
+    AsyncStorage.getItem('accessToken')
+    .then(token => {
+        AsyncStorage.getItem('userId')
+        .then(companyId => {
+            axios.put(`http://localhost:3005/api/companies/${companyId}/updateCompanyPwd`, {
+              currentPassword: currentPassword,
+              newPassword: newPassword
+            }, {
+            headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                console.log(response.data);
+                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
+            })
+            .catch(error => {
+                console.log(error)
+          
+                console.log('set')
+            });
+        })
+        .catch(error => {
+            console.log(error)
+            console.log('Asyncstorga')
+        });
+    })
+    .catch(error => {
+        console.log(error)
+        console.log('AcessToken')
+    });
+    
+  }
   return (
    
     <ImageBackground
@@ -48,12 +78,12 @@ export default function PwdCompagny() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Ancien mot de passe"
-        value={mdp}
-        onChangeText={setMdp}
+        value={currentPassword}
+        onChangeText={setCurrentPassword}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
+      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (

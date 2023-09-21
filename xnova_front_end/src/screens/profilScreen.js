@@ -16,9 +16,9 @@ export default function ProfilScreen(){
 
     const navigation = useNavigation();
 
-    const Photo = () =>{
-        navigation.navigate("Photo")
-      }
+    const Delete = () =>{
+      navigation.navigate("Delete")
+    }
 
     const Name = () =>{
         navigation.navigate("Name")
@@ -68,14 +68,7 @@ export default function ProfilScreen(){
                 trailing={props => <Icon name="chevron-right" {...props} />}
                 onPress={ Name}
                 style={{backgroundColor: '#2C333A', color: 'white'}}
-            />            
-            <ListItem
-                title="Email"
-                leading={<Icon name="email" size={24} />}
-                trailing={props => <Icon name="chevron-right" {...props} />}
-                onPress={ Email}
-
-            />                       
+            />                                 
             <ListItem
                 title="Mot de passe"
                 leading={<Icon name="account" size={24} />}
@@ -88,6 +81,14 @@ export default function ProfilScreen(){
                 leading={<Icon name="logout" size={24} />}
                 trailing={props => <Icon name="chevron-right" {...props} />}
                 onPress={ ()=> navigation.navigate('welcome')}
+
+            />
+
+             <ListItem
+                title="Suppression"
+                leading={<Icon name="delete" size={24} />}
+                trailing={props => <Icon name="chevron-right" {...props} />}
+                onPress={ ()=> navigation.navigate('Delete')}
 
             />            
             <TouchableOpacity  style = {styles.Button}onPress={Reservation} >

@@ -1,14 +1,16 @@
 import { StatusBar, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image,Alert } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function LoginUser() {
   const [value, setValue] = useState("");
-  const [numero, setNumero] = useState('');
+  const [tel, setTel] = useState('');
   const [enter, setEnter] = useState('');
-  const [mdp, setMdp] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation(); 
@@ -33,15 +35,27 @@ export default function LoginUser() {
   const handleLogin = () => {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      // Continue with login logic or navigation
-      Reservation()
-    }, 2000);
+    const data = {
+      tel: tel,
+      password: password,
+    };
 
-    
+    axios
+      .post('http://192.168.8.114:3005/api/login', data)
+      .then(response => {
+        AsyncStorage.setItem('token', response.data.accessToken);
+        AsyncStorage.setItem('userId', response.data.userId);
+        setLoading(false);
+        navigation.navigate('Reservation');
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+        if (error.response && error.response.status === 400) {
+          Alert.alert('Numéro ou mot de passe incorrect');
+        }
+      });
   };
-
   
 
 
@@ -59,11 +73,11 @@ export default function LoginUser() {
             defaultCode="CI"
             onChangeText={(text) => {
               setValue(text);
-              setNumero(text);
+              setTel(text);
               setEnter(text);
             }}
             onChangeFormattedText={(text) => {
-              setNumero(text);
+              setTel(text);
             }}
             withDarkTheme
             withShadow
@@ -78,8 +92,8 @@ export default function LoginUser() {
             style={styles.TextInput1}
             underlineColorIos="rgba(0,0,0,0)"
             placeholder="Mot de passe"
-            value={mdp}
-            onChangeText={setMdp}
+            value={password}
+            onChangeText={setPassword}
             secureTextEntry={true}
             placeholderTextColor="#AAA1A1"
           />

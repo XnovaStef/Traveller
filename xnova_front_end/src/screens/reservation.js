@@ -8,10 +8,33 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState, useEffect } from 'react';
 import {  useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 
 export default function Reservation() {
+
+  const [pseudo, setPseudo] = useState('');
+
+  useEffect(() => {
+    AsyncStorage.getItem('accessToken')
+      .then(token => {
+        AsyncStorage.getItem('userId')
+          .then(userId => {
+            axios.get(`http://192.168.8.114:3005/api/users/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+              .then(response => {
+                console.log(response.data);
+                setPseudo(response.data.pseudo);
+              })
+              .catch(error => console.log(error));
+          })
+          .catch(error => console.log(error));
+      })
+      .catch(error => console.log(error));
+  }, []);
 
   
 
@@ -80,7 +103,7 @@ const services = [
           </View>
         </View>
         <View style={styles.search}>
-          <Text style={{color: 'white', fontSize: 18, marginBottom: 10, fontFamily: 'Helvetica', fontStyle: 'italic'}}>Bienvenue Fallet sur TRAVELLER</Text>
+          <Text style={{color: 'white', fontSize: 18, marginBottom: 10, fontFamily: 'Helvetica', fontStyle: 'italic'}}>Bienvenue {pseudo} sur TRAVELLER</Text>
           <Text style={{color: 'white', fontSize: 23, fontWeight:'bold'}}>Services</Text>
           <TextInput
             style={styles.searchBar}

@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import RNPickerSelect from 'react-native-picker-select';
+import { useRoute } from '@react-navigation/native';
 
 export default function RegisterScreenCompany2() {
+
+
   const [fieldSets, setFieldSets] = useState([
-    { destination: '', Tarif: '', gare: '' },
+    { destinationTravel: '', tarifTravel: '', gareTravel: '' },
   ]);
 
   const addFieldSet = () => {
-    setFieldSets([...fieldSets, { destination: '', Tarif: '', gare: '' }]);
+    setFieldSets([...fieldSets, { destinationTravel: '', tarifTravel: '', gareTravel: '' }]);
   };
 
   const removeFieldSet = (indexToRemove) => {
@@ -19,15 +21,12 @@ export default function RegisterScreenCompany2() {
     setFieldSets(updatedFieldSets);
   };
 
-  const destinationOptions = [
-    { label: 'Option 1', value: 'option1' },
-    { label: 'Option 2', value: 'option2' },
-    { label: 'Option 3', value: 'option3' },
-    // Add more options as needed
-  ];
-
   const isNextButtonDisabled = (fieldSet) => {
-    return fieldSet.destination.trim() === '' || fieldSet.Tarif.trim() === '' || fieldSet.gare.trim() === '';
+    return (
+      fieldSet.destinationTravel.trim() === '' ||
+      fieldSet.tarifTravel.trim() === '' ||
+      fieldSet.gareTravel.trim() === ''
+    );
   };
 
   const navigation = useNavigation();
@@ -40,6 +39,18 @@ export default function RegisterScreenCompany2() {
     navigation.navigate("RegisterCompany");
   }
 
+  const goToRegistre = () => {
+    if (isNextButtonDisabled(fieldSets[0])) {
+      return;
+    } else {
+      navigation.navigate("RegisterCompany2", {
+        destinationTravel: fieldSets[0].destinationTravel,
+        tarifTravel: fieldSets[0].tarifTravel,
+        gareTravel: fieldSets[0].gareTravel,
+      });
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.Content}>
       <TouchableOpacity onPress={addFieldSet} style={styles.AddButton}>
@@ -50,24 +61,23 @@ export default function RegisterScreenCompany2() {
 
       {fieldSets.map((fieldSet, index) => (
         <View key={index}>
-          <RNPickerSelect
-            placeholder={{ label: 'Select a destination...', value: null }}
-            items={destinationOptions}
-            onValueChange={(value) => {
+          <TextInput
+            style={styles.input}
+            value={fieldSet.destinationTravel}
+            onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].destination = value;
+              updatedFieldSets[index].destinationTravel = text;
               setFieldSets(updatedFieldSets);
             }}
-            value={fieldSet.destination}
-            style={pickerSelectStyles}
+            placeholder="Destination"
           />
 
           <TextInput
             style={styles.input}
-            value={fieldSet.Tarif}
+            value={fieldSet.tarifTravel}
             onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].Tarif = text;
+              updatedFieldSets[index].tarifTravel = text;
               setFieldSets(updatedFieldSets);
             }}
             placeholder="Tarif"
@@ -76,10 +86,10 @@ export default function RegisterScreenCompany2() {
 
           <TextInput
             style={styles.input}
-            value={fieldSet.gare}
+            value={fieldSet.gareTravel}
             onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].gare = text;
+              updatedFieldSets[index].gareTravel = text;
               setFieldSets(updatedFieldSets);
             }}
             placeholder="Gare"
@@ -98,7 +108,7 @@ export default function RegisterScreenCompany2() {
             styles.nextButton,
             isNextButtonDisabled(fieldSets[0]) && styles.nextButtonDisabled,
           ]}
-          onPress={Company2} // Replace with your desired action or navigation
+          onPress={goToRegistre} // Replace with your desired action or navigation
           disabled={isNextButtonDisabled(fieldSets[0])}
         >
           <Text style={styles.nextButtonText}>SUIVANT</Text>
@@ -185,21 +195,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
-  },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    width: 300,
-    height: 50,
-    borderColor: '#fff',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    top: 30,
-    backgroundColor: '#fff'
-  },
-  inputAndroid: {
-    // Adjust Android styles if needed
   },
 });

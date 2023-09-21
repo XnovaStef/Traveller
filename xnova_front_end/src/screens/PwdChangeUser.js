@@ -1,14 +1,16 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator} from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
 import NavUser from '../components/navUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function PwdScreen() {
-  const [name, setName] = useState('');
-  const [mdp, setMdp] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Simulating some loading time with useEffect
@@ -22,10 +24,38 @@ export default function PwdScreen() {
     }
   }, [loading]);
 
-  const handleVerification = () => {
-    // Perform your verification logic here
-    setLoading(true);
-  };
+  const handlemodif = () => {
+    AsyncStorage.getItem('accessToken')
+    .then(token => {
+        AsyncStorage.getItem('userId')
+        .then(userId => {
+            axios.put(`http://192.168.8.114:3005/api/users/${userId}/updatePassword`, {
+              currentPassword: currentPassword,
+              newPassword: newPassword
+            }, {
+            headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                console.log(response.data);
+                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
+            })
+            .catch(error => {
+                console.log(error)
+          
+                console.log('set')
+            });
+        })
+        .catch(error => {
+            console.log(error)
+            console.log('Asyncstorga')
+        });
+    })
+    .catch(error => {
+        console.log(error)
+        console.log('AcessToken')
+    });
+    
+  }
   return (
    
     <ImageBackground
@@ -40,8 +70,8 @@ export default function PwdScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Nouveau mot de passe"
-        value={name}
-        onChangeText={setName}
+        value={newPassword}
+        onChangeText={setNewPassword}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
@@ -49,12 +79,12 @@ export default function PwdScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Ancien mot de passe"
-        value={mdp}
-        onChangeText={setMdp}
-        secureTextEntry={false}
+        value={currentPassword}
+        onChangeText={setCurrentPassword}
+        secureTextEntry={true}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
+      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (

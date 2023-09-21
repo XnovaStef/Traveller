@@ -1,34 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import Navbar from '../components/tab';
 import Background from '../components/background';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginPass() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Simulating some loading time with useEffect
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-        // Perform some action after loading
-        // For example, navigate to the next screen
-      }, 2000); // Simulating a 2-second loading time
-    }
-  }, [loading]);
+  const navigation = useNavigation(); 
 
-  const handleVerification = () => {
-    // Perform your verification logic here
+  const Ticket = () => {
+    // Simulate loading for 2 seconds
     setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // Navigate to the "Ticket" screen here
+      navigation.navigate("Ticket");
+    }, 2000); // Adjust the delay as needed
   };
 
   return (
     <View style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
       <StatusBar style='dark' />
       <Navbar />
-      <Text style={styles.text}>Veuillez saisir le code envoyé par sms</Text>
+      <Text style={styles.text}>Veuillez saisir le code envoyé par SMS</Text>
       <TextInput
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
@@ -38,7 +35,7 @@ export default function LoginPass() {
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
+      <TouchableOpacity style={styles.btn} onPress={Ticket} disabled={loading}>
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (

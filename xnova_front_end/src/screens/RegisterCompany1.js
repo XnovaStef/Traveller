@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 
 export default function RegisterScreenCompany1() {
 
-  const [companyName, setCompanyName] = useState('');
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [image, setImage] = useState(null);
+  const [compagnie, setCompagnie] = useState('');
+  const [email, setEmail] = useState('');
+  const [logo, setLogo] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -37,12 +37,12 @@ export default function RegisterScreenCompany1() {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      setLogo(result.uri);
     }
   };
 
   const isNextButtonDisabled = () => {
-    return companyName.trim() === '' || companyEmail.trim() === '' || (image && image.trim() === '');
+    return compagnie.trim() === '' || email.trim() === '' || (logo && logo.trim() === '');
   };
   
 
@@ -56,13 +56,24 @@ export default function RegisterScreenCompany1() {
     setTimeout(() => {
       // Perform any actions you want when the "Next" button is pressed
       // For example, you can navigate to the next screen or perform validation
-      console.log('Company Name:', companyName);
-      console.log('Company Email:', companyEmail);
-      console.log('Image:', image);
+      console.log('Company Name:', compagnie);
+      console.log('Company Email:', email);
+      console.log('Image:', logo);
 
       setLoading(false);
     }, 2000);
   };
+
+  const goToRegistre = () => {
+    if (isNextButtonDisabled()) {
+      return;
+    }
+    if (!compagnie || !email || !logo) {
+      Alert.alert('Veuillez remplir tous les champs obligatoires.');
+    }  else {
+      navigation.navigate("RegisterCompany1", { email: email, compagnie: compagnie, });
+    }
+  }
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -70,22 +81,22 @@ export default function RegisterScreenCompany1() {
       <Image style={{ width: 200, height: 40, marginHorizontal: '40%', marginTop: 50 }} source={require('../assets/images/logo.png')} />
         <TextInput
           style={styles.input}
-          value={companyName}
+          value={compagnie}
           placeholder="Nom compagnie"
-          onChangeText={(text) => setCompanyName(text)}
+          onChangeText={(text) => setCompagnie(text)}
         />
 
         <TextInput
           style={styles.input}
-          value={companyEmail}
-          onChangeText={(text) => setCompanyEmail(text)}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
           placeholder="E-mail compagnie"
           keyboardType="email-address"
         />
 
         <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.image} />
+          {logo? (
+            <Image source={{ uri: logo }} style={styles.image} />
           ) : (
             <Icon name="photo" size={60} color="#000" />
           )}
@@ -93,7 +104,7 @@ export default function RegisterScreenCompany1() {
 
         <TouchableOpacity
           style={[styles.nextButton, isNextButtonDisabled() && styles.nextButtonDisabled]}
-          onPress={Company1}
+          onPress={goToRegistre}
           disabled={isNextButtonDisabled()}
         >
           <Text style={styles.nextButtonText}>SUIVANT</Text>

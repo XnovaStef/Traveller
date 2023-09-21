@@ -36,7 +36,9 @@ import PayScreen from './src/screens/PayScreen';
 import VoyagesScreen from './src/screens/VoyageScreen';
 import ColisScreen from './src/screens/ColiScreen';
 import ReservScreen from './src/screens/ReservScreen';
-
+import DeleteScreen from './src/screens/DeleteScreen';
+import DeleteScreenCompany from './src/screens/DeleteScreenCompany';
+import TicketScreen from './src/screens/Ticket';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -78,8 +80,9 @@ export default function App() {
         <Stack.Screen name="Voyages" component={VoyagesScreen} />
         <Stack.Screen name="Colis" component={ColisScreen} />
         <Stack.Screen name="Reserv" component={ReservScreen} />
-        
-        
+        <Stack.Screen name="Delete" component={DeleteScreen} />
+        <Stack.Screen name="DeleteCompany" component={DeleteScreenCompany} />
+        <Stack.Screen name="Ticket" component={TicketScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

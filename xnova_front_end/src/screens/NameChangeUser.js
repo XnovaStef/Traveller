@@ -1,14 +1,16 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator} from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
 import NavUser from '../components/navUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function NameScreen() {
-  const [name, setName] = useState('');
-  const [mdp, setMdp] = useState('');
+  const [pseudo, setPseudo] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Simulating some loading time with useEffect
@@ -22,10 +24,38 @@ export default function NameScreen() {
     }
   }, [loading]);
 
-  const handleVerification = () => {
-    // Perform your verification logic here
-    setLoading(true);
-  };
+  const handlemodif = () => {
+    AsyncStorage.getItem('accessToken')
+    .then(token => {
+        AsyncStorage.getItem('userId')
+        .then(userId => {
+            axios.put(`http://192.168.8.114:3005/api/users/${userId}/updateName`, {
+            pseudo: pseudo,
+            password: password
+            }, {
+            headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                console.log(response.data);
+                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
+            })
+            .catch(error => {
+                console.log(error)
+          
+                console.log('set')
+            });
+        })
+        .catch(error => {
+            console.log(error)
+            console.log('Asyncstorga')
+        });
+    })
+    .catch(error => {
+        console.log(error)
+        console.log('AcessToken')
+    });
+    
+  }
   return (
    
     <ImageBackground
@@ -39,9 +69,9 @@ export default function NameScreen() {
         <TextInput
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
-        placeholder="Nom"
-        value={name}
-        onChangeText={setName}
+        placeholder="Nouveau nom"
+        value={pseudo}
+        onChangeText={setPseudo}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
@@ -49,18 +79,18 @@ export default function NameScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Mot de passe"
-        value={mdp}
-        onChangeText={setMdp}
-        secureTextEntry={false}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
-        {loading ? (
-          <ActivityIndicator size="small" color="#ffffff" />
-        ) : (
-          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
-        )}
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
+            {loading ? (
+              <ActivityIndicator size="small" color="#ffffff" /> // Display the loader when loading is true
+            ) : (
+              <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
+            )}
+          </TouchableOpacity>
         </View>
         </View>
       </ImageBackground>

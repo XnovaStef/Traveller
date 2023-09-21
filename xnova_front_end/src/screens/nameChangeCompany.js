@@ -4,10 +4,13 @@ import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextIn
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
 
 export default function CompagnyScreen() {
-  const [name, setName] = useState('');
-  const [mdp, setMdp] = useState('');
+  const [compagnie, setCompagnie] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Simulating some loading time with useEffect
@@ -21,10 +24,38 @@ export default function CompagnyScreen() {
     }
   }, [loading]);
 
-  const handleVerification = () => {
-    // Perform your verification logic here
-    setLoading(true);
-  };
+  const handlemodif = () => {
+    AsyncStorage.getItem('accessToken')
+    .then(token => {
+        AsyncStorage.getItem('userId')
+        .then(companyId => {
+            axios.put(`http://localhost:3005/api/companies/${companyId}/updateCompany`, {
+            compagnie: compagnie,
+            password: password
+            }, {
+            headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                console.log(response.data);
+                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
+            })
+            .catch(error => {
+                console.log(error)
+          
+                console.log('set')
+            });
+        })
+        .catch(error => {
+            console.log(error)
+            console.log('Asyncstorga')
+        });
+    })
+    .catch(error => {
+        console.log(error)
+        console.log('AcessToken')
+    });
+    
+  }
   return (
    
     <ImageBackground
@@ -39,8 +70,8 @@ export default function CompagnyScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Nouveau nom"
-        value={name}
-        onChangeText={setName}
+        value={compagnie}
+        onChangeText={setCompagnie}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
@@ -48,12 +79,12 @@ export default function CompagnyScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Mot de passe"
-        value={mdp}
-        onChangeText={setMdp}
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
+      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (

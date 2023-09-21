@@ -5,10 +5,16 @@ import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
 import NavUser from '../components/navUser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+
+
 export default function EmailScreen() {
-  const [name, setName] = useState('');
-  const [mdp, setMdp] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  
 
   // Simulating some loading time with useEffect
   useEffect(() => {
@@ -21,10 +27,37 @@ export default function EmailScreen() {
     }
   }, [loading]);
 
-  const handleVerification = () => {
-    // Perform your verification logic here
-    setLoading(true);
-  };
+  const handlemodif = () => {
+    AsyncStorage.getItem('accessToken')
+    .then(token => {
+        AsyncStorage.getItem('userId')
+        .then(companyId => {
+            axios.put(`http://localhost:3005/api/companies/${companyId}/updateCompanyEmail`, {
+            email: email,
+            password: password
+            }, {
+            headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error)
+          
+                console.log('set')
+            });
+        })
+        .catch(error => {
+            console.log(error)
+            console.log('Asyncstorga')
+        });
+    })
+    .catch(error => {
+        console.log(error)
+        console.log('AcessToken')
+    });
+    
+  }
   return (
    
     <ImageBackground
@@ -39,8 +72,8 @@ export default function EmailScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Email"
-        value={name}
-        onChangeText={setName}
+        value={newEmail}
+        onChangeText={setNewEmail}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
@@ -48,12 +81,12 @@ export default function EmailScreen() {
         style={styles.TextInput}
         underlineColorIos="rgba(0,0,0,0)"
         placeholder="Mot de passe"
-        value={mdp}
-        onChangeText={setMdp}
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry={false}
         placeholderTextColor="#AAA1A1"
       />
-      <TouchableOpacity style={styles.btn} onPress={handleVerification}>
+      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
         {loading ? (
           <ActivityIndicator size="small" color="#ffffff" />
         ) : (

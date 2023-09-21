@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
+import { useRoute } from '@react-navigation/native';
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import RNPickerSelect from 'react-native-picker-select';
+import axios from 'axios';
 
 export default function RegisterScreenCompany3() {
+
+  const route = useRoute();
+  const { compagnie, email, logo, destinationTravel, tarifTravel, gareTravel } = route.params;
+
+  const [isLoading, setIsLoading] = useState(false);
   const [fieldSets, setFieldSets] = useState([
-    { destination: '', Tarif: '', gare: '' },
+    { destinationColis: '', tarifColis: '', gareColis: '' },
   ]);
-  const [isLoading, setIsLoading] = useState(false); // New state for loader
 
   const addFieldSet = () => {
-    setFieldSets([...fieldSets, { destination: '', Tarif: '', gare: '' }]);
+    setFieldSets([...fieldSets, { destinationColis: '', tarifColis: '', gareColis: '' }]);
   };
 
   const removeFieldSet = (indexToRemove) => {
@@ -20,29 +25,55 @@ export default function RegisterScreenCompany3() {
     setFieldSets(updatedFieldSets);
   };
 
-  const destinationOptions = [
-    { label: 'Option 1', value: 'option1' },
-    { label: 'Option 2', value: 'option2' },
-    { label: 'Option 3', value: 'option3' },
-    // Add more options as needed
-  ];
-
   const isNextButtonDisabled = (fieldSet) => {
-    return fieldSet.destination.trim() === '' || fieldSet.Tarif.trim() === '' || fieldSet.gare.trim() === '';
+    return (
+      fieldSet.destinationColis.trim() === '' ||
+      fieldSet.tarifColis.trim() === '' ||
+      fieldSet.gareColis.trim() === ''
+    );
   };
 
   const navigation = useNavigation();
 
-  const Company2 = async () => {
-    setIsLoading(true); // Show loader before navigation
+  const Company2 = () => {
+    navigation.navigate("RegisterCompany2");
+  }
 
-    // Simulate some async action (like API call) using a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  const Company1 = () => {
+    navigation.navigate("RegisterCompany");
+  }
 
-    setIsLoading(false); // Hide loader after action is completed
+  const login = () => {
+    navigation.navigate("Login");
+  }
 
-    navigation.navigate("LoginCompany");
-    Alert.alert("Vous recevrez un code qui sera votre mot de passe")
+  const goToRegistre = () => {
+    const data = {
+      compagnie: compagnie,
+      email: email,
+      destinationTravel: destinationTravel,
+      tarifTravel: tarifTravel,
+      gareTravel: gareTravel,
+      fieldSets: fieldSets, // Pass the fieldSets array to the data object
+      logo: logo
+    };
+    if (isNextButtonDisabled(fieldSets[0])) {
+      return;
+    } else {
+      axios
+      .post('http://192.168.8.114:3005/api/register1', data)
+      .then((response) => {
+        console.log(data);
+        console.log(response.data);
+        Alert.alert('Compte créé avec succès !');
+        navigation.navigate('LoginUser');
+      })
+      .catch((error) => {
+        console.error('AxiosError:', error);
+        // You can also display an error message to the user
+        Alert.alert('Une erreur s\'est produite lors de la requête.');
+      });
+    }
   }
 
   return (
@@ -51,28 +82,27 @@ export default function RegisterScreenCompany3() {
         <Icon name="plus" size={40} color="#000" />
       </TouchableOpacity>
       <Image style={{ width: 200, height: 40, marginHorizontal: '40%', marginTop: 50 }} source={require('../assets/images/logo.png')} />
-      <Text style={styles.Title}>Colis</Text>
+      <Text style={styles.Title}>Voyages</Text>
 
       {fieldSets.map((fieldSet, index) => (
         <View key={index}>
-          <RNPickerSelect
-            placeholder={{ label: 'Select a destination...', value: null }}
-            items={destinationOptions}
-            onValueChange={(value) => {
+          <TextInput
+            style={styles.input}
+            value={fieldSet.destinationColis}
+            onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].destination = value;
+              updatedFieldSets[index].destinationColis = text;
               setFieldSets(updatedFieldSets);
             }}
-            value={fieldSet.destination}
-            style={pickerSelectStyles}
+            placeholder="Destination"
           />
 
           <TextInput
             style={styles.input}
-            value={fieldSet.Tarif}
+            value={fieldSet.tarifColis}
             onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].Tarif = text;
+              updatedFieldSets[index].tarifColis = text;
               setFieldSets(updatedFieldSets);
             }}
             placeholder="Tarif"
@@ -81,10 +111,10 @@ export default function RegisterScreenCompany3() {
 
           <TextInput
             style={styles.input}
-            value={fieldSet.gare}
+            value={fieldSet.gareColis}
             onChangeText={(text) => {
               const updatedFieldSets = [...fieldSets];
-              updatedFieldSets[index].gare = text;
+              updatedFieldSets[index].gareColis = text;
               setFieldSets(updatedFieldSets);
             }}
             placeholder="Gare"
@@ -102,7 +132,7 @@ export default function RegisterScreenCompany3() {
             styles.nextButton,
             isNextButtonDisabled(fieldSets[0]) && styles.nextButtonDisabled,
           ]}
-          onPress={Company2}
+          onPress={goToRegistre}
           disabled={isNextButtonDisabled(fieldSets[0])}
         >
           <Text style={styles.nextButtonText}>S'enregistrer</Text>
@@ -170,7 +200,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   nextButtonDisabled: {
-    backgroundColor: '#888', // or any other color you want for disabled state
+    backgroundColor: '#888',
   },
   prevButton:{
     backgroundColor: '#F58909',
@@ -196,7 +226,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 

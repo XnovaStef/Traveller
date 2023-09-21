@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,20 +9,22 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   TouchableOpacity,
-  Button
+  Button,
+  Alert
 } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function RegisterUser() {
-  const [nom, setNom] = useState('');
-  const [domicile, setDomicile] = useState('');
-  const [numero, setNumero] = useState('');
-  const [profession, setProfession] = useState('');
-  const [mdp, setMdp] = useState('');
-  const [confirmerPassword, setConfirmerPassword] = useState('');
+  const [pseudo, setPseudo] = useState('');
+  const [residence, setResidence] = useState('');
+  const [tel, setTel] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [password, setPassword] = useState('');
   const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const phoneInput = useRef<PhoneInput>(null);
 
   const navigation = useNavigation();
 
@@ -38,16 +40,41 @@ const Login = () =>{
     Keyboard.dismiss();
   };
 
-  const handleRegistration = () => {
-    // Perform registration logic here
+  const handleRegistration = async () => {
+    // Set isLoading to true when starting registration
     setIsLoading(true);
-
-    // Simulating an asynchronous operation
-    setTimeout(() => {
-     Reservation()
-      setIsLoading(false);
-    }, 2000);
+  
+    const data = {
+      pseudo: pseudo,
+      residence: residence,
+      occupation: occupation,
+      tel: tel,
+      password: password,
+    };
+  
+    axios
+      .post('http://192.168.8.114:3005/api/register', data)
+      .then((response) => {
+        console.log(data);
+        console.log(response.data);
+        Alert.alert('Compte créé avec succès !');
+  
+        // Set isLoading to false when registration is successful
+        setIsLoading(false);
+  
+        navigation.navigate('LoginUser');
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 400) {
+          Alert.alert('Numéro déjà utilisé !');
+        }
+  
+        // Set isLoading to false when there's an error
+        setIsLoading(false);
+      });
   };
+  
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -59,9 +86,9 @@ const Login = () =>{
         <TextInput
           style={styles.TextInput}
           underlineColorAndroid="transparent"
-          placeholder="Nom"
-          value={nom}
-          onChangeText={setNom}
+          placeholder="Pseudo"
+          value={pseudo}
+          onChangeText={setPseudo}
           placeholderTextColor="#AAA1A1"
           textContainerStyle={{ color: 'white' }}
         />
@@ -69,18 +96,18 @@ const Login = () =>{
         <TextInput
           style={styles.TextInput}
           underlineColorAndroid="transparent"
-          placeholder="Domicile"
-          value={domicile}
-          onChangeText={setDomicile}
+          placeholder="Residence"
+          value={residence}
+          onChangeText={setResidence}
           placeholderTextColor="#AAA1A1"
         />
 
 <TextInput
           style={styles.TextInput}
           underlineColorAndroid="transparent"
-          placeholder="profession"
-          value={profession}
-          onChangeText={setProfession}
+          placeholder="Profession"
+          value={occupation}
+          onChangeText={setOccupation}
           placeholderTextColor="#AAA1A1"
         />
 
@@ -89,10 +116,10 @@ const Login = () =>{
           defaultCode="CI"
           onChangeText={(text) => {
             setValue(text);
-            setNumero(text);
+            setTel(text);
           }}
           onChangeFormattedText={(text) => {
-            setNumero(text);
+            setTel(text);
           }}
           withDarkTheme
           withShadow
@@ -107,33 +134,26 @@ const Login = () =>{
           style={styles.TextInput}
           underlineColorAndroid="transparent"
           placeholder="Mot de passe"
-          value={mdp}
-          onChangeText={setMdp}
+          value={password}
+          onChangeText={setPassword}
           secureTextEntry={true}
           placeholderTextColor="#AAA1A1"
         />
 
-        <TextInput
-          style={styles.TextInput}
-          underlineColorAndroid="transparent"
-          placeholder="Confirmer mot de passe"
-          value={confirmerPassword}
-          onChangeText={setConfirmerPassword}
-          secureTextEntry={true}
-          placeholderTextColor="#AAA1A1"
-        />
+        
 
 <TouchableOpacity
-          style={styles.registerButton}
-          onPress={handleRegistration}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={styles.buttonText}>s'enregistrer</Text>
-          )}
-        </TouchableOpacity>
+  style={styles.registerButton}
+  onPress={handleRegistration}
+  disabled={isLoading} // Disables the button when loading
+>
+  {isLoading ? (
+    <ActivityIndicator size="small" color="white" /> // Show the loader
+  ) : (
+    <Text style={styles.buttonText}>s'enregistrer</Text> // Show the button text
+  )}
+</TouchableOpacity>
+
         <Text style = {{color:'#fff', fontWeight:'bold'}}>Vous avez déjà un compte?
         <TouchableOpacity onPress={Login}><Text style = {{color:'#F36210', fontWeight:'bold'}}>se connecter</Text></TouchableOpacity>
         </Text>
