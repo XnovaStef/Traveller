@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Animatable from 'react-native-animatable';
 
 export default function ChooseScreen() {
-    
   const navigation = useNavigation();
-
-  const [button1Style, setButton1Style] = useState(styles.button1);
-  const [button2Style, setButton2Style] = useState(styles.button2);
 
   const User = () => {
     navigation.navigate("RegisterUser");
@@ -17,6 +14,18 @@ export default function ChooseScreen() {
     navigation.navigate("RegisterCompany");
   }
 
+  // State to control animation
+  const [animationComplete, setAnimationComplete] = useState(false);
+
+  useEffect(() => {
+    // Add a delay before triggering the animation
+    const animationTimeout = setTimeout(() => {
+      setAnimationComplete(true);
+    }, 1); // Adjust the delay as needed
+
+    return () => clearTimeout(animationTimeout);
+  }, []);
+
   return (
     <View style={styles.global}>
       <Image
@@ -24,13 +33,23 @@ export default function ChooseScreen() {
         style={{ width: 200, height: 50, alignSelf: 'center', marginTop: '15%' }}
       />
       <View>
-        <TouchableOpacity style={button1Style} onPress={User}>
-          <Text style={styles.buttonText}>Voyageur</Text>
-        </TouchableOpacity>
+        <Animatable.View
+          animation={animationComplete ? 'zoomIn' : undefined}
+          style={styles.buttonWrapper}
+        >
+          <TouchableOpacity style={styles.button1} onPress={User}>
+            <Text style={styles.buttonText}>Voyageur</Text>
+          </TouchableOpacity>
+        </Animatable.View>
 
-        <TouchableOpacity style={button2Style} onPress={Company}>
-          <Text style={styles.buttonText}>Compagnie</Text>
-        </TouchableOpacity>
+        <Animatable.View
+          animation={animationComplete ? 'zoomIn' : undefined}
+          style={styles.buttonWrapper}
+        >
+          <TouchableOpacity style={styles.button2} onPress={Company}>
+            <Text style={styles.buttonText}>Compagnie</Text>
+          </TouchableOpacity>
+        </Animatable.View>
       </View>
     </View>
   );
@@ -49,11 +68,15 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
+  buttonWrapper: {
+    alignItems: 'center',
+    marginTop: 50,
+    top:'30%'
+  },
   button1: {
     backgroundColor: '#F36210',
     width: 250,
     height: 80,
-    marginTop: '50%',
     borderRadius: 20,
     shadowOpacity: 0.7,
     shadowColor: '#fff',
@@ -64,7 +87,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F36210',
     width: 250,
     height: 80,
-    marginTop: '10%',
     borderRadius: 20,
     shadowOpacity: 0.7,
     shadowColor: '#fff',

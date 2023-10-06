@@ -41,6 +41,56 @@ import DeleteScreenCompany from './src/screens/DeleteScreenCompany';
 import TicketScreen from './src/screens/Ticket';
 const Stack = createStackNavigator();
 
+const slideTransition = ({ current }) => {
+  return {
+    cardStyle: {
+      transform: [
+        {
+          translateX: current.progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [200, 0], // Adjust the translation as needed
+          }),
+        },
+      ],
+    },
+  };
+};
+
+// Custom transition for flip animation
+const flipTransition = ({ current }) => {
+  return {
+    cardStyle: {
+      transform: [
+        {
+          perspective: 1000,
+        },
+        {
+          rotateY: current.progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg'],
+          }),
+        },
+      ],
+    },
+  };
+};
+
+// Custom transition for scale animation
+const scaleTransition = ({ current }) => {
+  return {
+    cardStyle: {
+      transform: [
+        {
+          scale: current.progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0.9], // You can adjust the scaling as needed
+          }),
+        },
+      ],
+    },
+  };
+};
+
 export default function App() {
   return (
     <NavigationContainer>

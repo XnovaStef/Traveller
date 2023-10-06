@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Animatable from 'react-native-animatable'; // Import the library
 
 export default function ChooseScreen1() {
-    
   const navigation = useNavigation();
 
   const [button1Style, setButton1Style] = useState(styles.button1);
@@ -24,13 +24,17 @@ export default function ChooseScreen1() {
         style={{ width: 200, height: 50, alignSelf: 'center', marginTop: '15%' }}
       />
       <View>
-        <TouchableOpacity style={button1Style} onPress={LoginUser}>
-          <Text style={styles.buttonText}>Voyageur</Text>
-        </TouchableOpacity>
+        <Animatable.View animation="lightSpeedIn" duration={2000} style={button1Style}>
+          <TouchableOpacity onPress={LoginUser}>
+            <Text style={styles.buttonText}>Voyageur</Text>
+          </TouchableOpacity>
+        </Animatable.View>
 
-        <TouchableOpacity style={button2Style} onPress={LoginCompany}>
-          <Text style={styles.buttonText}>Compagnie</Text>
-        </TouchableOpacity>
+        <Animatable.View animation="lightSpeedIn" duration={2000} style={button2Style}>
+          <TouchableOpacity onPress={LoginCompany}>
+            <Text style={styles.buttonText}>Compagnie</Text>
+          </TouchableOpacity>
+        </Animatable.View>
       </View>
     </View>
   );
