@@ -41,7 +41,7 @@ export default function LoginUser() {
     };
 
     axios
-      .post('http://192.168.1.8:3005/api/login', data)
+      .post('http://192.168.1.12:3005/api/login', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('userId', response.data.userId);
@@ -51,6 +51,7 @@ export default function LoginUser() {
       .catch(error => {
         console.log(error);
         setLoading(false);
+        Alert.alert('Numéro ou mot de passe incorrect');
         if (error.response && error.response.status === 400) {
           Alert.alert('Numéro ou mot de passe incorrect');
         }

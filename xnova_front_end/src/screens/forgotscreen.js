@@ -1,28 +1,50 @@
 import { StatusBar, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image, Alert } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function ForgotScreen() {
   const [value, setValue] = useState("");
   const [numero, setNumero] = useState('');
   const [enter, setEnter] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
 
-  const handleForgotPassword = () => {
+  const handleForgotPassword = async () => {
+    // Set isLoading to true when starting registration
     setLoading(true);
-    // Simulate an API call or any async task
-    setTimeout(() => {
-      setLoading(false);
-      // Do something after the async task completes
-    }, 2000); // Replace with your desired loading duration
-
-    // Additional logic for handling the forgot password functionality
-    // ...
+  
+    const data = {
+     tel: numero
+    };
+  
+    axios
+      .post('http://192.168.1.12:3005/api/users/forgot', data)
+      .then((response) => {
+        console.log(data);
+        console.log(response.data);
+        Alert.alert('Mot de passe modifié !');
+  
+        // Set isLoading to false when registration is successful
+        setLoading(false);
+  
+        navigation.navigate('LoginUser');
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 400) {
+          Alert.alert('Numéro inconnu !');
+        }
+  
+        // Set isLoading to false when there's an error
+        setLoading(false);
+      });
   };
 
   return (

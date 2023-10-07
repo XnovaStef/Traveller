@@ -13,49 +13,52 @@ export default function NameScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Simulating some loading time with useEffect
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-        // Perform some action after loading
-        // For example, navigate to the next screen
-      }, 2000); // Simulating a 2-second loading time
-    }
-  }, [loading]);
 
   const handlemodif = () => {
+    setLoading(true); // Start loading indicator
+
     AsyncStorage.getItem('accessToken')
-    .then(token => {
+      .then((token) => {
         AsyncStorage.getItem('userId')
-        .then(userId => {
-            axios.put(`http://192.168.8.114:3005/api/users/${userId}/updateName`, {
-            pseudo: pseudo,
-            password: password
-            }, {
-            headers: { Authorization: `Bearer ${token}` }
-            })
-            .then(response => {
+          .then((userId) => {
+            axios
+              .put(
+                `http://192.168.1.12:3005/api/users/${userId}/updateName`,
+                {
+                  pseudo: pseudo,
+                  password: password,
+                },
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              )
+              .then((response) => {
                 console.log(response.data);
-                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
-            })
-            .catch(error => {
-                console.log(error)
-          
-                console.log('set')
-            });
-        })
-        .catch(error => {
-            console.log(error)
-            console.log('Asyncstorga')
-        });
-    })
-    .catch(error => {
-        console.log(error)
-        console.log('AcessToken')
-    });
-    
-  }
+                Alert.alert(
+                  'Succès',
+                  'Reconnectez-vous pour voir les modifications'
+                );
+              })
+              .catch((error) => {
+                console.log(error);
+                console.log('set');
+              })
+              .finally(() => {
+                setLoading(false); // Stop loading indicator regardless of success or failure
+              });
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log('Asyncstorga');
+            setLoading(false); // Stop loading indicator on error
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log('AcessToken');
+        setLoading(false); // Stop loading indicator on error
+      });
+  };
   return (
    
     <ImageBackground

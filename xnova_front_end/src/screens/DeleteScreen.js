@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { StatusBar, Dimensions, ImageBackground, View, TouchableOpacity, Image, Linking, StyleSheet, Text, TextInput, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { StatusBar, Dimensions, ImageBackground, View, TouchableOpacity, Image, Linking, StyleSheet, Text, TextInput, Keyboard, TouchableWithoutFeedback, Alert, ActivityIndicator } from 'react-native';
 import { useFonts } from 'expo-font';
 import { ListItem } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
@@ -8,38 +8,46 @@ import Nav from '../components/nav';
 import axios from 'axios';
 
 export default function DeleteScreen() {
-  const navigation = useNavigation(); // For navigation
+  const navigation = useNavigation();
 
-  /*let [fontsLoaded] = useFonts({
-    'Montserrat': require('../assets/fonts/static/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/static/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../assets/fonts/static/Montserrat-SemiBold.ttf'),
-  });*/
-
-  const [tel, setTel] = useState('');
+  const [numero, setNumero] = useState('');
   const [password, setPassword] = useState('');
   const [pattern, setPattern] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  
+  const setNumeroWithCountryCode = (text) => {
+    if (text.startsWith('+225')) {
+      setNumero(text);
+    } else {
+      setNumero('+225' + text);
+    }
+  };
 
   const handleDelete = () => {
-    if (tel === '' || password === '' || pattern === '') {
-      Alert.alert("veuillez remplir tous les champs ")
+    if (numero === '' || password === '' || pattern === '') {
+      Alert.alert("Veuillez remplir tous les champs");
       return;
     }
 
-    axios.post('http://localhost:3005/api/users/RequestUser', {
-      tel: tel,
+    // Set isLoading to true when the request starts
+    setIsLoading(true);
+
+    axios.post('http://192.168.1.12:3005/api/users/RequestUser', {
+      tel: numero,
       password: password,
       pattern: pattern,
     })
-      .then(function (response) {
-        console.log(response);
-        Alert.alert("Opération réussie")
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    .then(function (response) {
+      console.log(response);
+      Alert.alert("Opération réussie");
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(() => {
+      // Set isLoading to false when the request is completed
+      setIsLoading(false);
+    });
   };
 
   const dismissKeyboard = () => {
@@ -51,15 +59,14 @@ export default function DeleteScreen() {
       <View style={styles.global}>
         <StatusBar style="dark" />
         <View style={styles.header}>
-          <Text style={{ color: '#fff', fontWeight: 'Bold', fontSize: 25 }}>Suppression de compte</Text>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 25 }}>Suppression de compte</Text>
         </View>
         <View style={styles.delete}>
-          
           <TextInput
             style={styles.input}
             placeholder="Numéro"
-            value={tel}
-            onChangeText={text => setTel(text)}
+            value={numero}
+            onChangeText={setNumeroWithCountryCode}
           />
           <TextInput
             style={styles.input}
@@ -76,12 +83,14 @@ export default function DeleteScreen() {
             value={pattern}
             onChangeText={text => setPattern(text)}
           />
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#246EC3" />
+          ) : (
             <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-            <Text style={styles.deleteButtonText}>Supprimer</Text>
-          </TouchableOpacity>
-          
+              <Text style={styles.deleteButtonText}>Supprimer</Text>
+            </TouchableOpacity>
+          )}
         </View>
-        
       </View>
     </TouchableWithoutFeedback>
   );
@@ -116,7 +125,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 2,
     padding: 20,
-    justifyContent:'center'
+    justifyContent: 'center',
   },
   deleteButton: {
     backgroundColor: '#246EC3',
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
-    top:17,
+    top: 17,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -132,7 +141,7 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: '#fff',
-    fontWeight: 'Bold',
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 3,

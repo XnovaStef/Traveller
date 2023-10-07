@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator, Alert} from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity, ImageBackground, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
@@ -25,99 +25,108 @@ export default function PwdScreen() {
   }, [loading]);
 
   const handlemodif = () => {
+    // Start loading when the button is pressed
+    setLoading(true);
+
     AsyncStorage.getItem('accessToken')
-    .then(token => {
+      .then(token => {
         AsyncStorage.getItem('userId')
-        .then(userId => {
-            axios.put(`http://192.168.8.114:3005/api/users/${userId}/updatePassword`, {
+          .then(userId => {
+            axios.put(`http://192.168.1.12:3005/api/users/${userId}/updatePassword`, {
               currentPassword: currentPassword,
               newPassword: newPassword
             }, {
-            headers: { Authorization: `Bearer ${token}` }
+              headers: { Authorization: `Bearer ${token}` }
             })
-            .then(response => {
+              .then(response => {
                 console.log(response.data);
-                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications")
-            })
-            .catch(error => {
-                console.log(error)
-          
-                console.log('set')
-            });
-        })
-        .catch(error => {
-            console.log(error)
-            console.log('Asyncstorga')
-        });
-    })
-    .catch(error => {
-        console.log(error)
-        console.log('AcessToken')
-    });
-    
-  }
+                Alert.alert("Succès", "Reconnectez-vous pour voir les modifications");
+              })
+              .catch(error => {
+                console.log(error);
+                console.log('set');
+              });
+          })
+          .catch(error => {
+            console.log(error);
+            console.log('AsyncStorage');
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        console.log('AccessToken');
+      });
+
+    // Simulate an asynchronous action (e.g., API call)
+    // You can replace this with your actual logic
+    setTimeout(() => {
+      // Stop loading after a certain delay (2 seconds in this case)
+      setLoading(false);
+
+      // Perform your actual logic here (e.g., making an API call)
+      // Once the operation is complete, you can update the UI accordingly
+    }, 2000);
+  };
+
   return (
-   
     <ImageBackground
       source={require('../assets/images/download.jpg')}
       style={styles.global}
     >
-        <View style= {styles.global}>
-        <NavUser/>
-        <View style = {styles.cadre}>
-        <Text style={styles.text}>Modifier mot de passe </Text>
-        <TextInput
-        style={styles.TextInput}
-        underlineColorIos="rgba(0,0,0,0)"
-        placeholder="Nouveau mot de passe"
-        value={newPassword}
-        onChangeText={setNewPassword}
-        secureTextEntry={false}
-        placeholderTextColor="#AAA1A1"
-      />
-      <TextInput
-        style={styles.TextInput}
-        underlineColorIos="rgba(0,0,0,0)"
-        placeholder="Ancien mot de passe"
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
-        secureTextEntry={true}
-        placeholderTextColor="#AAA1A1"
-      />
-      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
-        {loading ? (
-          <ActivityIndicator size="small" color="#ffffff" />
-        ) : (
-          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
-        )}
-      </TouchableOpacity>
+      <View style={styles.global}>
+        <NavUser />
+        <View style={styles.cadre}>
+          <Text style={styles.text}>Modifier mot de passe </Text>
+          <TextInput
+            style={styles.TextInput}
+            underlineColorIos="rgba(0,0,0,0)"
+            placeholder="Nouveau mot de passe"
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry={false}
+            placeholderTextColor="#AAA1A1"
+          />
+          <TextInput
+            style={styles.TextInput}
+            underlineColorIos="rgba(0,0,0,0)"
+            placeholder="Ancien mot de passe"
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            secureTextEntry={true}
+            placeholderTextColor="#AAA1A1"
+          />
+          <TouchableOpacity style={styles.btn} onPress={handlemodif}>
+            {loading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
+            )}
+          </TouchableOpacity>
         </View>
-        </View>
-      </ImageBackground>
-   
+      </View>
+    </ImageBackground>
   );
 }
 
-styles = StyleSheet.create({
-  global:{
-    flex:1,
-    
+const styles = StyleSheet.create({
+  global: {
+    flex: 1,
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
     top: -50,
-    color:'#fff'
+    color: '#fff'
   },
-  cadre:{
-    width:'85%',
-    height:'65%',
-    backgroundColor:'#246EC3',
-    marginTop:'20%',
-    marginLeft:'7%',
-    borderRadius:10,
-    justifyContent:'center',
-    alignItems:'center'
+  cadre: {
+    width: '85%',
+    height: '65%',
+    backgroundColor: '#246EC3',
+    marginTop: '20%',
+    marginLeft: '7%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   TextInput: {
     top: 0,
@@ -129,7 +138,7 @@ styles = StyleSheet.create({
     fontSize: 13,
     paddingHorizontal: 30,
     borderColor: '#fff',
-    marginTop:10
+    marginTop: 10
   },
   btn: {
     backgroundColor: '#F36210',
@@ -146,6 +155,4 @@ styles = StyleSheet.create({
     elevation: 4,
     top: '40%',
   },
-})
-
-
+});

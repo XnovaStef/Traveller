@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable'; // Import react-native-animatable
 import TicketCode from '../components/ticketCode';
 
 export default function PaymentScreen() {
@@ -29,17 +38,19 @@ export default function PaymentScreen() {
   };
 
   const renderPaymentItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.paymentItem}
-      onPress={() => handleOptionPress(item)}
-    >
-      <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-        Date: {item.date}
-      </Text>
-      <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-        Heure: {item.time}
-      </Text>
-    </TouchableOpacity>
+    <Animatable.View animation="bounceIn" duration={3000}>
+      <TouchableOpacity
+        style={styles.paymentItem}
+        onPress={() => handleOptionPress(item)}
+      >
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
+          Date: {item.date}
+        </Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
+          Heure: {item.time}
+        </Text>
+      </TouchableOpacity>
+    </Animatable.View>
   );
 
   const handleOptionPress = (payment) => {
@@ -48,7 +59,19 @@ export default function PaymentScreen() {
   };
 
   const closeModal = () => {
+    setSelectedPayment(null);
     setShowModal(false);
+  };
+
+  const bounceEffect = {
+    0: {
+      opacity: 0,
+      translateY: -100, // Move the element up by 100 units
+    },
+    1: {
+      opacity: 1,
+      translateY: 0, // Return to its original position
+    },
   };
 
   return (
@@ -65,26 +88,27 @@ export default function PaymentScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderPaymentItem}
       />
-     <Modal
-  animationType="fade"
-  transparent={true}
-  visible={showModal}
-  onRequestClose={() => setShowModal(false)}
->
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      {selectedPayment && (
-        <>
-          <TicketCode />
-          <TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
-            <Ionicons name="close" size={24} color="black" />
-          </TouchableOpacity>
-        </>
-      )}
-    </View>
-  </View>
-</Modal>
-
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showModal}
+        onRequestClose={() => setShowModal(false)}
+      >
+        {/* Apply the Bouncing Entrance effect to the modal container */}
+        <Animatable.View animation={bounceEffect} duration={1000} style={styles.modalContainer}>
+          {/* Apply the Bouncing Entrance effect to the modal content */}
+          <Animatable.View animation="bounceIn" style={styles.modalContent}>
+            {selectedPayment && (
+              <>
+                <TicketCode />
+                <TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
+                  <Ionicons name="close" size={24} color="black" />
+                </TouchableOpacity>
+              </>
+            )}
+          </Animatable.View>
+        </Animatable.View>
+      </Modal>
     </View>
   );
 }
