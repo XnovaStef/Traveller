@@ -61,6 +61,14 @@ export default function ProfilScreen() {
                 onPress={Password}
               />
             </Animatable.View>
+            <Animatable.View animation="lightSpeedIn" duration={1500}>
+              <ListItem
+                title="Déconnexion"
+                leading={<Icon name="account" size={24} />}
+                trailing={props => <Icon name="chevron-right" {...props} />}
+                onPress={ ()=> navigation.navigate('welcome')}
+              />
+            </Animatable.View>
             <Animatable.View animation="lightSpeedIn" duration={2000}>
               <ListItem
                 title="Suppression"

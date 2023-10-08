@@ -1,15 +1,18 @@
 import { StatusBar, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image, Alert } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ForgotScreen() {
   const [value, setValue] = useState("");
   const [numero, setNumero] = useState('');
   const [enter, setEnter] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const [code, setCode] = useState('');
   const navigation = useNavigation();
 
   const dismissKeyboard = () => {
@@ -21,20 +24,17 @@ export default function ForgotScreen() {
     setLoading(true);
   
     const data = {
-     tel: numero
+      tel: numero
     };
   
     axios
       .post('http://192.168.1.12:3005/api/users/forgot', data)
       .then((response) => {
-        console.log(data);
-        console.log(response.data);
-        Alert.alert('Mot de passe modifié !');
-  
         // Set isLoading to false when registration is successful
         setLoading(false);
   
-        navigation.navigate('LoginUser');
+        // Display the generated code in an alert
+       Alert.alert('Votre nouveau mot de passe est: xnova@@')
       })
       .catch((error) => {
         console.log(error);
@@ -46,6 +46,9 @@ export default function ForgotScreen() {
         setLoading(false);
       });
   };
+
+ 
+  
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -81,6 +84,8 @@ export default function ForgotScreen() {
             <Text style={styles.buttonText}>Envoyer</Text>
           )}
         </TouchableOpacity>
+
+       
       </View>
     </TouchableWithoutFeedback>
   );
