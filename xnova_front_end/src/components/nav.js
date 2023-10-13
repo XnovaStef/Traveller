@@ -31,39 +31,7 @@ const Nav = () => {
       .catch(error => console.log(error));
   }, []);
 
-  const uploadCompanyLogo = async () => {
-    try {
-      const token = await AsyncStorage.getItem('accessToken');
-      const companyId = await AsyncStorage.getItem('companyId');
-  
-      if (!token || !companyId) {
-        console.log('Access token or companyId missing.');
-        return;
-      }
-  
-      const response = await axios.get(`http://192.168.1.15:3005/api/companies/${companyId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'arraybuffer',
-      });
-  
-      const arrayBuffer = new Uint8Array(response.data);
-      let binaryString = '';
-      arrayBuffer.forEach((byte) => {
-        binaryString += String.fromCharCode(byte);
-      });
-  
-      const base64Image = btoa(binaryString);
-      const imageDataUrl = `data:image/png;base64,${base64Image}`;
-  
-      setLogo(imageDataUrl);
-    } catch (error) {
-      console.log('Error while fetching and processing company logo:', error);
-    }
-  };
-  
-  useEffect(() => {
-    uploadCompanyLogo();
-  }, []);
+ 
   
   
 
