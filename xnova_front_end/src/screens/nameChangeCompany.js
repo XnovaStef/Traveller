@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator} from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
@@ -27,9 +27,9 @@ export default function CompagnyScreen() {
   const handlemodif = () => {
     AsyncStorage.getItem('accessToken')
     .then(token => {
-        AsyncStorage.getItem('userId')
+        AsyncStorage.getItem('companyId')
         .then(companyId => {
-            axios.put(`http://localhost:3005/api/companies/${companyId}/updateCompany`, {
+            axios.put(`http://192.168.1.15:3005/api/companies/${companyId}/updateCompany`, {
             compagnie: compagnie,
             password: password
             }, {

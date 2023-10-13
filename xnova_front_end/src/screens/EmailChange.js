@@ -1,125 +1,101 @@
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity,ImageBackground, TextInput , ActivityIndicator} from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, Image, StyleSheet, TouchableOpacity, ImageBackground, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Nav from '../components/nav';
-import Navbar1 from '../components/tab1';
-import NavUser from '../components/navUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
-
 
 export default function EmailScreen() {
   const [newEmail, setNewEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  
-
-  // Simulating some loading time with useEffect
-  useEffect(() => {
-    if (loading) {
-      setTimeout(() => {
-        setLoading(false);
-        // Perform some action after loading
-        // For example, navigate to the next screen
-      }, 2000); // Simulating a 2-second loading time
-    }
-  }, [loading]);
 
   const handlemodif = () => {
     AsyncStorage.getItem('accessToken')
-    .then(token => {
-        AsyncStorage.getItem('userId')
-        .then(companyId => {
-            axios.put(`http://192.168.1.12:3005/api/companies/${companyId}/updateCompanyEmail`, {
-            email: email,
-            password: password
+      .then(token => {
+        AsyncStorage.getItem('companyId')
+          .then(companyId => {
+            axios.put(`http://192.168.1.15:3005/api/companies/${companyId}/updateCompanyEmail`, {
+              newEmail: newEmail,
+              password: password
             }, {
-            headers: { Authorization: `Bearer ${token}` }
+              headers: { Authorization: `Bearer ${token}` }
             })
-            .then(response => {
+              .then(response => {
                 console.log(response.data);
-            })
-            .catch(error => {
-                console.log(error)
-          
-                console.log('set')
-            });
-        })
-        .catch(error => {
-            console.log(error)
-            console.log('Asyncstorga')
-        });
-    })
-    .catch(error => {
-        console.log(error)
-        console.log('AcessToken')
-    });
-    
+                Alert.alert("Succès", "Email modifié")
+              })
+              .catch(error => {
+                console.log(error);
+                console.log('set');
+              });
+          })
+          .catch(error => {
+            console.log(error);
+            console.log('AsyncStorage');
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        console.log('AccessToken');
+      });
   }
+
   return (
-   
     <ImageBackground
       source={require('../assets/images/download.jpg')}
       style={styles.global}
     >
-        <View style= {styles.global}>
-        <NavUser/>
-        <View style = {styles.cadre}>
-        <Text style={styles.text}>Modifier Email </Text>
-        <TextInput
-        style={styles.TextInput}
-        underlineColorIos="rgba(0,0,0,0)"
-        placeholder="Email"
-        value={newEmail}
-        onChangeText={setNewEmail}
-        secureTextEntry={false}
-        placeholderTextColor="#AAA1A1"
-      />
-      <TextInput
-        style={styles.TextInput}
-        underlineColorIos="rgba(0,0,0,0)"
-        placeholder="Mot de passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={false}
-        placeholderTextColor="#AAA1A1"
-      />
-      <TouchableOpacity style={styles.btn} onPress={handlemodif}>
-        {loading ? (
-          <ActivityIndicator size="small" color="#ffffff" />
-        ) : (
-          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
-        )}
-      </TouchableOpacity>
+      <View style={styles.global}>
+        <Nav />
+        <View style={styles.cadre}>
+          <Text style={styles.text}>Modifier Email </Text>
+          <TextInput
+            style={styles.TextInput}
+            underlineColorIos="rgba(0,0,0,0)"
+            placeholder="nouveau email"
+            value={newEmail}
+            onChangeText={setNewEmail}
+            secureTextEntry={false}
+            placeholderTextColor="#AAA1A1"
+          />
+          <TextInput
+            style={styles.TextInput}
+            underlineColorIos="rgba(0,0,0,0)"
+            placeholder="Mot de passe"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={false}
+            placeholderTextColor="#AAA1A1"
+          />
+          <TouchableOpacity style={styles.btn} onPress={handlemodif}>
+            <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Modifier</Text>
+          </TouchableOpacity>
         </View>
-        </View>
-      </ImageBackground>
-   
+      </View>
+    </ImageBackground>
   );
 }
 
-styles = StyleSheet.create({
-  global:{
-    flex:1,
-    
+const styles = StyleSheet.create({
+  global: {
+    flex: 1,
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
     top: -50,
-    color:'#fff'
+    color: '#fff'
   },
-  cadre:{
-    width:'85%',
-    height:'65%',
-    backgroundColor:'#246EC3',
-    marginTop:'20%',
-    marginLeft:'7%',
-    borderRadius:10,
-    justifyContent:'center',
-    alignItems:'center'
+  cadre: {
+    width: '85%',
+    height: '65%',
+    backgroundColor: '#246EC3',
+    marginTop: '20%',
+    marginLeft: '7%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   TextInput: {
     top: 0,
@@ -131,7 +107,7 @@ styles = StyleSheet.create({
     fontSize: 20,
     paddingHorizontal: 50,
     borderColor: '#fff',
-    marginTop:10
+    marginTop: 10
   },
   btn: {
     backgroundColor: '#F36210',
@@ -148,6 +124,4 @@ styles = StyleSheet.create({
     elevation: 4,
     top: '40%',
   },
-})
-
-
+});

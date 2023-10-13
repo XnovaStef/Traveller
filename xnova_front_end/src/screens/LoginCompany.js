@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function RegisterScreenCompany1() {
 
-  const [companyEmail, setCompanyEmail] = useState('');
-  const [code, setCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -21,23 +23,38 @@ export default function RegisterScreenCompany1() {
   };
 
   const isNextButtonDisabled = () => {
-    return loading || companyEmail === '' || code === '';
+    return loading || email === '' || password === '';
   };
 
   const handleNext = () => {
     if (isNextButtonDisabled()) {
       return;
     }
+
     setLoading(true);
 
-    // Simulate an asynchronous action (e.g., saving to a database)
-    setTimeout(() => {
-      // Perform any actions you want when the "Next" button is pressed
-      // For example, you can navigate to the next screen or perform validation
+    const data = {
+      email: email,
+      password: password,
+    };
 
-      setLoading(false);
-      HomeCompany(); // Navigate to HomeCompany screen
-    }, 2000);
+    axios
+      .post('http://192.168.1.15:3005/api/login1', data)
+      .then(response => {
+        AsyncStorage.setItem('token', response.data.accessToken);
+        AsyncStorage.setItem('companyId', response.data.companyId);
+        setLoading(false);
+        navigation.navigate('HomeCompany');
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+        Alert.alert('Email ou mot de passe incorrect');
+        if (error.response && error.response.status === 400) {
+          Alert.alert('Email ou mot de passe incorrect');
+        }
+      });
+   
   };
 
   return (
@@ -46,15 +63,15 @@ export default function RegisterScreenCompany1() {
         <Image style={{ width: 200, height: 40, marginHorizontal: '40%', marginTop: 50 }} source={require('../assets/images/logo.png')} />
         <TextInput
           style={styles.input}
-          value={companyEmail}
+          value={email}
           placeholder="Email"
-          onChangeText={(text) => setCompanyEmail(text)}
+          onChangeText={(text) => setEmail(text)}
         />
 
         <TextInput
           style={styles.input}
-          value={code}
-          onChangeText={(text) => setCode(text)}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
           placeholder="G-1200"
           keyboardType="number-pad"
         />

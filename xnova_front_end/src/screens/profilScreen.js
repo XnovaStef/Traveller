@@ -13,6 +13,9 @@ export default function ProfilScreen() {
   const Delete = () => {
     navigation.navigate("Delete");
   }
+  const Email = () => {
+    navigation.navigate("Email");
+  }
 
   const Name = () => {
     navigation.navigate("Name");

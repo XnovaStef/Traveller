@@ -24,6 +24,10 @@ export default function ProfilScreen(){
         navigation.navigate("Compagny")
       }
 
+      const Email = () =>{
+        navigation.navigate("Email")
+      }
+
       const PwdCompagny = () =>{
         navigation.navigate("PwdCompagny")
       }
@@ -54,7 +58,7 @@ export default function ProfilScreen(){
             <View style ={styles.Profil}>
         <Text style = {{color:'#fff', fontSize:30,fontWeight:'bold'}}>Profil compagnie</Text>
            
-            <View style={{width: '80%', marginBottom: 20, marginTop: 20,shadowOpacity: 0.7,
+            <View style={{width: '80%', marginBottom: 20, top: 40,shadowOpacity: 0.7,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
     elevation: 4,}}>
@@ -70,6 +74,13 @@ export default function ProfilScreen(){
                 leading={<Icon name="account" size={24} />}
                 trailing={props => <Icon name="chevron-right" {...props} />}
                 onPress={ PwdCompagny}
+
+            /> 
+             <ListItem
+                title="Email"
+                leading={<Icon name="mail" size={24} />}
+                trailing={props => <Icon name="chevron-right" {...props} />}
+                onPress={ Email}
 
             />                       
             <ListItem

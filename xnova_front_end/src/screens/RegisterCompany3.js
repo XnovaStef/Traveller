@@ -61,7 +61,7 @@ export default function RegisterScreenCompany3() {
       return;
     } else {
       axios
-      .post('http://192.168.8.114:3005/api/register1', data)
+      .post('http://192.168.1.15:3005/api/register1', data)
       .then((response) => {
         console.log(data);
         console.log(response.data);
@@ -82,7 +82,7 @@ export default function RegisterScreenCompany3() {
         <Icon name="plus" size={40} color="#000" />
       </TouchableOpacity>
       <Image style={{ width: 200, height: 40, marginHorizontal: '40%', marginTop: 50 }} source={require('../assets/images/logo.png')} />
-      <Text style={styles.Title}>Voyages</Text>
+      <Text style={styles.Title}>Colis</Text>
 
       {fieldSets.map((fieldSet, index) => (
         <View key={index}>

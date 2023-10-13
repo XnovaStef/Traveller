@@ -23,7 +23,7 @@ export default function NameScreen() {
           .then((userId) => {
             axios
               .put(
-                `http://192.168.1.12:3005/api/users/${userId}/updateName`,
+                `http://192.168.1.15:3005/api/users/${userId}/updateName`,
                 {
                   pseudo: pseudo,
                   password: password,
