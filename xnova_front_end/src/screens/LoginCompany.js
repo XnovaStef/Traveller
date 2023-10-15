@@ -39,7 +39,7 @@ export default function RegisterScreenCompany1() {
     };
 
     axios
-      .post('http://192.168.1.15:3005/api/login1', data)
+      .post('http://192.168.1.9:3005/api/login1', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('companyId', response.data.companyId);

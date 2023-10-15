@@ -71,7 +71,7 @@ export default function RegisterScreenCompany1() {
     if (!compagnie || !email || !logo) {
       Alert.alert('Veuillez remplir tous les champs obligatoires.');
     }  else {
-      navigation.navigate("RegisterCompany1", { email: email, compagnie: compagnie, });
+      navigation.navigate("RegisterCompany1", { email: email, compagnie: compagnie, logo: logo });
     }
   }
 

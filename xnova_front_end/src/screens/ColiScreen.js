@@ -1,13 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, View, ScrollView, Alert, Button } from 'react-native'; // Added Button
 import 'react-native-gesture-handler';
-import Navbar from '../components/tab';
-import CountryPicker from 'react-native-country-picker-modal';
-import ServiceBox from '../components/ServicesBox';
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
+
 
 export default function ColisScreen() {
   // State to hold the values of the text inputs

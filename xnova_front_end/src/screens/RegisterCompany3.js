@@ -61,7 +61,7 @@ export default function RegisterScreenCompany3() {
       return;
     } else {
       axios
-      .post('http://192.168.1.15:3005/api/register1', data)
+      .post('http://192.168.1.9:3005/api/register1', data)
       .then((response) => {
         console.log(data);
         console.log(response.data);

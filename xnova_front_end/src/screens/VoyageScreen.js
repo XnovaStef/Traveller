@@ -1,10 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet, Text, View, Alert, Button } from 'react-native';
 import React, { useState } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 
 export default function VoyagesScreen() {
   const [selectedPlaces, setSelectedPlaces] = useState(null);
+  const [selectedDepartureTime, setSelectedDepartureTime] = useState(null);
 
   const handlePayButtonPress = () => {
     Alert.alert('Payment');
@@ -30,7 +31,7 @@ export default function VoyagesScreen() {
         <Text style={{ color: '#246EC3', fontWeight: 'bold', fontSize: 15, top: 30 }}>Heure de départ</Text>
         <RNPickerSelect
           placeholder={{ label: 'Heure de départ', value: null }}
-          onValueChange={(value) => setSelectedPlaces(value)}
+          onValueChange={(value) => setSelectedDepartureTime(value)}
           style={pickerSelectStyles1}
           items={[
             { label: '07h30', value: 1 },
