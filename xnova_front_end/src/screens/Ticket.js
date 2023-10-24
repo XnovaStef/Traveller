@@ -1,148 +1,229 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as Animatable from 'react-native-animatable'; // Import react-native-animatable
-import TicketCode from '../components/ticketCode';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Modal } from 'react-native';
+import axios from 'axios';
+import { StatusBar } from 'expo-status-bar';
+import Navbar from '../components/tab';
+import QRCode from 'react-native-qrcode-svg';
+import * as Animatable from 'react-native-animatable'; // Import Animatable
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function PaymentScreen() {
-  const [filterText, setFilterText] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+
+export default function HistoryScreen() {
+  const [datePay, setDatePay] = useState('');
+  const [nature, setNature] = useState('');
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const flatListRef = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const paymentDates = [
-    { id: 1, date: '2023-09-25', time: '10:00 AM' },
-    { id: 2, date: '2023-09-26', time: '2:30 PM' },
-    { id: 3, date: '2023-09-28', time: '9:15 AM' },
-    { id: 4, date: '2023-09-25', time: '10:00 AM' },
-    { id: 5, date: '2023-09-26', time: '2:30 PM' },
-    { id: 6, date: '2023-09-28', time: '9:15 AM' },
-    // Add more payment dates and times as needed
-  ];
-
-  const handleFilter = (text) => {
-    const filteredPayments = paymentDates.filter((payment) =>
-      payment.date.toLowerCase().includes(text.toLowerCase()) ||
-      payment.time.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilterText(text);
-    setFilteredData(filteredPayments);
+  const ticketData = {
+    qrCodeData: 'Your QR Code Data',
+    paymentDate: '2023-10-07',
+    transaction: 'Paiement',
+    numberOfTickets: 2,
+    paymentTime: '14:30',
   };
 
-  const renderPaymentItem = ({ item }) => (
-    <Animatable.View animation="bounceIn" duration={3000}>
-      <TouchableOpacity
-        style={styles.paymentItem}
-        onPress={() => handleOptionPress(item)}
-      >
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-          Date: {item.date}
-        </Text>
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-          Heure: {item.time}
-        </Text>
-      </TouchableOpacity>
-    </Animatable.View>
-  );
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.187:3005/api/everyTravelInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
 
-  const handleOptionPress = (payment) => {
-    setSelectedPayment(payment);
-    setShowModal(true);
-  };
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.187:3005/api/everyColisInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
 
-  const closeModal = () => {
-    setSelectedPayment(null);
-    setShowModal(false);
-  };
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.187:3005/api/everyReservationInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
 
-  const bounceEffect = {
-    0: {
-      opacity: 0,
-      translateY: -100, // Move the element up by 100 units
-    },
-    1: {
-      opacity: 1,
-      translateY: 0, // Return to its original position
-    },
-  };
+  const filteredTransactionHistory = transactionHistory.filter((item) => {
+    const isDateMatched = !datePay || item.datePay.includes(datePay);
+    const isNatureMatched = !nature || item.nature.toLowerCase().includes(nature.toLowerCase());
+    return isDateMatched && isNatureMatched;
+  });
 
   return (
-    <View style={styles.container}>
+    <View style={styles.global}>
+      <StatusBar style='dark' />
       <TextInput
-        style={styles.input}
-        placeholder="Search by date or time"
-        value={filterText}
-        onChangeText={handleFilter}
+        style={styles.searchBar1}
+        placeholder="Filtrer par date (YYYY-MM-DD)"
+        placeholderTextColor="#000"
+        value={datePay}
+        onChangeText={(text) => setDatePay(text)}
       />
-      <FlatList
-        style={styles.flatList}
-        data={filteredData.length > 0 ? filteredData : paymentDates}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderPaymentItem}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Filtrer par nature"
+        placeholderTextColor="#000"
+        value={nature}
+        onChangeText={(text) => setNature(text)}
       />
+      <Animatable.View animation="bounceIn" duration={1000} style={styles.bouncingView}>
+        <FlatList
+          ref={flatListRef}
+          data={filteredTransactionHistory}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedItem(item);
+                setModalVisible(true);
+              }}
+            >
+              <View style={styles.transactionItem}>
+                <Text style={styles.text}>Nature: ticket {item.nature}</Text>
+                <Text style={styles.text}>
+                  Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
+                </Text>
+                <Text style={styles.text}>Heure: {item.timePay}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </Animatable.View>
+
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
-        visible={showModal}
-        onRequestClose={() => setShowModal(false)}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
       >
-        {/* Apply the Bouncing Entrance effect to the modal container */}
-        <Animatable.View animation={bounceEffect} duration={1000} style={styles.modalContainer}>
-          {/* Apply the Bouncing Entrance effect to the modal content */}
-          <Animatable.View animation="bounceIn" style={styles.modalContent}>
-            {selectedPayment && (
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {selectedItem && (
               <>
-                <TicketCode />
-                <TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
-                  <Ionicons name="close" size={24} color="black" />
-                </TouchableOpacity>
+                <Text style={styles.modalText}>Nature: {selectedItem.nature}</Text>
+                <Text style={styles.modalText}>Date de Paiement: {selectedItem.datePay}</Text>
+                <Text style={styles.modalText}>Date de Paiement: {selectedItem.timePay}</Text>
+                <QRCode
+                  value={ticketData.qrCodeData}
+                  size={120}
+                />
+                {/* Add more details here */}
               </>
             )}
-          </Animatable.View>
-        </Animatable.View>
+            <Icon
+        name="close"
+        size={30}
+        color="#000"
+        style={styles.closeIcon}
+        onPress={() => setModalVisible(false)}
+      />
+          </View>
+        </View>
       </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  global: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
   },
-  input: {
+  searchBar: {
     height: 40,
-    borderColor: '#000',
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 8,
+    width: '90%',
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    color: '#000',
+    paddingHorizontal: 10,
     marginBottom: 40,
-    top: 20,
-    color: '#fff',
+    shadowOpacity: 0.5,
     shadowColor: '#000',
-    shadowOffset: { width: 3, height: 3 },
+    shadowOffset: { width: 0, height: 3 },
     elevation: 4,
-    shadowOpacity: 1,
+    top: 30,
+    marginLeft: 20,
   },
-  flatList: {
-    flex: 1,
+  searchBar1: {
+    height: 40,
+    width: '90%',
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    color: '#000',
+    paddingHorizontal: 10,
+    marginBottom: 40,
+    shadowOpacity: 0.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+    top: 50,
+    marginLeft: 20,
   },
-  paymentItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderColor: 'lightgray',
-    height: 80,
+  transactionItem: {
     backgroundColor: '#F36210',
-    justifyContent: 'center',
+    borderWidth: 0,
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+  },
+  text: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -151,15 +232,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    width: '80%',
+    height: '50%',
     padding: 20,
+    backgroundColor: '#fff',
     borderRadius: 10,
-    height: '60%',
-    width: '90%',
   },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  modalCloseButton: {
+    fontSize: 12,
+    color: '#007BFF',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  
   closeIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 10, // Adjust the top value to position the icon vertically
+    right: 10, // Adjust the right value to position the icon horizontally
+  },
+  bouncingView: {
+    flex: 1,
   },
 });

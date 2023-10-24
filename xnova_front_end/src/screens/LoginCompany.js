@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 export default function RegisterScreenCompany1() {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
   const navigation = useNavigation();
 
-  const HomeCompany = () => {
-    navigation.navigate("HomeCompany");
-  }
+  const ForgotComp = () => {
+    navigation.navigate('ForgotComp');
+  };
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -39,22 +36,23 @@ export default function RegisterScreenCompany1() {
     };
 
     axios
-      .post('http://192.168.1.9:3005/api/login1', data)
+      .post('http://192.168.8.187:3005/api/login1', data) // Replace with your API endpoint
       .then(response => {
+        // Assuming your API returns a valid token and companyId
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('companyId', response.data.companyId);
         setLoading(false);
         navigation.navigate('HomeCompany');
       })
       .catch(error => {
-        console.log(error);
         setLoading(false);
-        Alert.alert('Email ou mot de passe incorrect');
-        if (error.response && error.response.status === 400) {
+        if (error.response && error.response.status === 401) {
           Alert.alert('Email ou mot de passe incorrect');
+        } else {
+          console.log(error);
+          Alert.alert('Une erreur s\'est produite lors de la connexion.');
         }
       });
-   
   };
 
   return (
@@ -65,15 +63,15 @@ export default function RegisterScreenCompany1() {
           style={styles.input}
           value={email}
           placeholder="Email"
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={text => setEmail(text)}
         />
 
         <TextInput
           style={styles.input}
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={text => setPassword(text)}
           placeholder="G-1200"
-          keyboardType="number-pad"
+          secureTextEntry={true}
         />
 
         <TouchableOpacity
@@ -87,6 +85,10 @@ export default function RegisterScreenCompany1() {
             <Text style={styles.nextButtonText}>Se connecter</Text>
           )}
         </TouchableOpacity>
+
+        <TouchableOpacity style={{ top: '22%', marginLeft: '37%' }} onPress={ForgotComp}>
+          <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>Mot de passe oublié</Text>
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#246EC3'
+    backgroundColor: '#246EC3',
   },
   input: {
     width: '80%',
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     top: 180,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   LoginButton: {
     backgroundColor: '#F58909',

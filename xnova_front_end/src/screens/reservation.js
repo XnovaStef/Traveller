@@ -22,7 +22,7 @@ export default function Reservation() {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.get(`http://192.168.1.9:3005/api/users/${userId}`, {
+            axios.get(`http://192.168.8.187:3005/api/users/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
               .then(response => {
@@ -103,7 +103,7 @@ const services = [
           </View>
         </View>
         <View style={styles.search}>
-          <Text style={{color: 'white', fontSize: 18, marginBottom: 10, fontFamily: 'Helvetica', fontStyle: 'italic'}}>Bienvenue {pseudo} sur TRAVELLER</Text>
+          <Text style={{color: 'white', fontSize: 18, marginBottom: 10, fontWeight: 'bold', fontStyle: 'italic'}}>Bienvenue {pseudo} sur TRAVELLER</Text>
           <Text style={{color: 'white', fontSize: 23, fontWeight:'bold'}}>Services</Text>
           <TextInput
             style={styles.searchBar}

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Text, View, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Navbar from '../components/tab';
 import Background from '../components/background';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function LoginPass() {
   const [code, setCode] = useState('');
@@ -12,13 +14,33 @@ export default function LoginPass() {
   const navigation = useNavigation(); 
 
   const Ticket = () => {
-    // Simulate loading for 2 seconds
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // Navigate to the "Ticket" screen here
-      navigation.navigate("Ticket");
-    }, 2000); // Adjust the delay as needed
+
+    const data = {
+      code: code
+    };
+
+    axios
+      .post('http://192.168.8.187:3005/api/user/loginPass', data)
+      .then(response => {
+        AsyncStorage.setItem('token', response.data.accessToken);
+        AsyncStorage.setItem('passId', response.data.passId);
+        setLoading(false);
+        navigation.navigate('Ticket');
+      })
+      .catch(error => {
+        console.log(error);
+        setLoading(false);
+      
+        if (error.response && error.response.status === 400) {
+          Alert.alert('Code expiré');
+        } else if (error.response && error.response.status === 401) {
+          Alert.alert('Accès non autorisé. Veuillez vérifier le code.');
+        } else {
+          Alert.alert('Une erreur s\'est produite. Veuillez réessayer plus tard.');
+        }
+      });
+      
   };
 
   return (

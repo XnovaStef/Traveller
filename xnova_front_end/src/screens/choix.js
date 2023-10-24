@@ -42,14 +42,7 @@ export default function ChooseScreen() {
           </TouchableOpacity>
         </Animatable.View>
 
-        <Animatable.View
-          animation={animationComplete ? 'zoomIn' : undefined}
-          style={styles.buttonWrapper}
-        >
-          <TouchableOpacity style={styles.button2} onPress={Company}>
-            <Text style={styles.buttonText}>Compagnie</Text>
-          </TouchableOpacity>
-        </Animatable.View>
+       
       </View>
     </View>
   );
@@ -71,7 +64,8 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     alignItems: 'center',
     marginTop: 50,
-    top:'30%'
+    top:100,
+
   },
   button1: {
     backgroundColor: '#F36210',
@@ -82,6 +76,7 @@ const styles = StyleSheet.create({
     shadowColor: '#fff',
     shadowOffset: { width: 2, height: 2 },
     elevation: 4,
+
   },
   button2: {
     backgroundColor: '#F36210',

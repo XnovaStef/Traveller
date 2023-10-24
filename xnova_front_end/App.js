@@ -39,6 +39,7 @@ import ReservScreen from './src/screens/ReservScreen';
 import DeleteScreen from './src/screens/DeleteScreen';
 import DeleteScreenCompany from './src/screens/DeleteScreenCompany';
 import TicketScreen from './src/screens/Ticket';
+import ForgotCompany from './src/screens/forgotCompany';
 const Stack = createStackNavigator();
 
 const slideTransition = ({ current }) => {
@@ -133,6 +134,7 @@ export default function App() {
         <Stack.Screen name="Delete" component={DeleteScreen} />
         <Stack.Screen name="DeleteCompany" component={DeleteScreenCompany} />
         <Stack.Screen name="Ticket" component={TicketScreen} />
+        <Stack.Screen name="ForgotComp" component={ForgotCompany} />
       </Stack.Navigator>
     </NavigationContainer>
   );
