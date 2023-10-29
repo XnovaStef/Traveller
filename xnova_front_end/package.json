@@ -20,7 +20,7 @@
     "base64-js": "^1.5.1",
     "expo-image-picker": "~14.3.2",
     "expo-status-bar": "~1.6.0",
-    "expo-updates": "~0.18.16",
+    "expo-updates": "~0.18.17",
     "lottie-react-native": "5.1.6",
     "react": "18.2.0",
     "react-native": "0.72.6",

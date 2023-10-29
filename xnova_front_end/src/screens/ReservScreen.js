@@ -1,11 +1,9 @@
-
-import { StyleSheet, Text, View, Alert, Button } from 'react-native';
+import { StyleSheet, Text, View, Alert, Button, TextInput } from 'react-native';
 import React, { useState } from 'react';
-import RNPickerSelect from 'react-native-picker-select';
 
 export default function ReservScreen() {
-  const [selectedPlaces, setSelectedPlaces] = useState(null);
-  const [selectedDepartureTime, setSelectedDepartureTime] = useState(null);
+  const [selectedPlaces, setSelectedPlaces] = useState('');
+  const [selectedDepartureTime, setSelectedDepartureTime] = useState('');
 
   const handlePayButtonPress = () => {
     Alert.alert('Réservation effectuée');
@@ -14,33 +12,31 @@ export default function ReservScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}>Paiement voyage</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}>Réservation</Text>
       </View>
       <View style={styles.inputsContainer}>
         <Text style={{ color: '#246EC3', fontWeight: 'bold', fontSize: 15 }}>Nombre de places</Text>
-        <RNPickerSelect
-          placeholder={{ label: 'Nombre de places', value: null }}
-          onValueChange={(value) => setSelectedPlaces(value)}
-          style={pickerSelectStyles}
-          items={[
-            { label: '1', value: 1 },
-            { label: '2', value: 2 },
-            { label: '3', value: 3 },
-            // Add more options as needed
-          ]}
+        <TextInput
+          style={styles.textInput}
+          placeholder="Nombre de places"
+          value={selectedPlaces}
+          onChangeText={(text) => setSelectedPlaces(text)}
         />
 
         <Text style={{ color: '#246EC3', fontWeight: 'bold', fontSize: 15, top: 30 }}>Heure de départ</Text>
-        <RNPickerSelect
-          placeholder={{ label: 'Heure de départ', value: null }}
-          onValueChange={(value) => setSelectedDepartureTime(value)}
-          style={pickerSelectStyles1}
-          items={[
-            { label: '07h30', value: 1 },
-            { label: '10h', value: 2 },
-            { label: '08h30', value: 3 },
-            // Add more options as needed
-          ]}
+        <TextInput
+          style={styles.textInput}
+          placeholder="Heure de départ"
+          value={selectedDepartureTime}
+          onChangeText={(text) => setSelectedDepartureTime(text)}
+        />
+
+<Text style={{ color: '#246EC3', fontWeight: 'bold', fontSize: 15, top: 30 }}>Compagnie</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Compagnie"
+          value={selectedDepartureTime}
+          onChangeText={(text) => setSelectedDepartureTime(text)}
         />
 
         <View style={styles.btn}>
@@ -83,10 +79,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
   },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
+  textInput: {
     width: 300,
     height: 50,
     borderColor: '#fff',
@@ -94,20 +87,6 @@ const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     top: 30,
-    backgroundColor: '#fff',
-    left: 15,
-  },
-});
-
-const pickerSelectStyles1 = StyleSheet.create({
-  inputIOS: {
-    width: 300,
-    height: 50,
-    borderColor: '#fff',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    top: 50,
     backgroundColor: '#fff',
     left: 15,
   },

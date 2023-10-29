@@ -73,15 +73,20 @@ return (
       data={filteredTransactionHistory}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({ item }) => (
-        <View style={styles.transactionItem}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.transactionItem}>
           <Text style={styles.text}>Nature: {item.nature}</Text>
           <Text style={styles.text}>
             Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
           </Text>
           <Text style={styles.text}>Gare: {item.gare}</Text>
           <Text style={styles.text}>Heure: {item.timePay}</Text>
+          <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
         </View>
+        </ScrollView>
+        
       )}
+      //style={{ marginBottom: 100 }}
       // onEndReached={handleEndReached} (if needed)
       // onEndReachedThreshold={0.1} (if needed)
     />
@@ -92,7 +97,8 @@ return (
 
 const styles = StyleSheet.create({
   global: {
-    flex: 1,
+    flexGrow: 1,
+    
   },
   searchBar: {
     height: 40,
@@ -125,11 +131,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   scrollView: {
-    flex: 1,
-    marginTop: '15%',
-    marginHorizontal: 20,
-    width: '90%',
-    marginBottom: 100,
+    marginTop: 10,
+        marginHorizontal: 20,
+        width: '90%',
   },
   transactionItem: {
     backgroundColor: '#246EC3',
