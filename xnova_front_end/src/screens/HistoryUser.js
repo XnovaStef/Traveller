@@ -64,7 +64,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.187:3005/api/everyReservationInfo?page=${page}`
+            `http://192.168.1.11:3005/api/everyReservationInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {

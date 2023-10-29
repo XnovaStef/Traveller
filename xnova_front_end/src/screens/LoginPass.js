@@ -21,7 +21,7 @@ export default function LoginPass() {
     };
 
     axios
-      .post('http://192.168.8.187:3005/api/user/loginPass', data)
+      .post('http://192.168.1.11:3005/api/user/loginPass', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('passId', response.data.passId);

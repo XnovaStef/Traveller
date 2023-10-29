@@ -32,7 +32,7 @@ export default function DeleteScreen() {
     // Set isLoading to true when the request starts
     setIsLoading(true);
 
-    axios.post('http://192.168.8.187:3005/api/users/RequestUser', {
+    axios.post('http://192.168.1.11:3005/api/users/RequestUser', {
       tel: numero,
       password: password,
       pattern: pattern,

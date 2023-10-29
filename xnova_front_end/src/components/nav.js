@@ -17,7 +17,7 @@ const Nav = () => {
       .then(token => {
         AsyncStorage.getItem('companyId')
           .then(companyId => {
-            axios.get(`http://192.168.8.187:3005/api/companies/${companyId}`, {
+            axios.get(`http://192.168.1.11:3005/api/companies/${companyId}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
               .then(response => {
