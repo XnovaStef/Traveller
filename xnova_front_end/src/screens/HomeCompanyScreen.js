@@ -18,13 +18,15 @@ export default function HomeCompanyScreen() {
 
 
 
+
+
   useEffect(() => {
     if (!isLoading) {
       setIsLoading(true);
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.1.11:3005/api/everyTravelInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyTravelInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -41,6 +43,54 @@ export default function HomeCompanyScreen() {
     }
   }, [page]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.166:3005/api/everyColisInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.166:3005/api/everyReservationInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
+
+  
+
   // Update the transaction filter logic to include date and station
 const filteredTransactionHistory = transactionHistory.filter(item => {
   const isDateMatched = !datePay || item.datePay.includes(datePay);
@@ -52,45 +102,41 @@ const filteredTransactionHistory = transactionHistory.filter(item => {
 return (
   <View style={styles.global}>
     <StatusBar style='dark' />
-
     <Nav />
+
     <TextInput
       style={styles.searchBar}
       placeholder="Filtrer par date (YYYY-MM-DD)"
       placeholderTextColor="#000"
       value={datePay}
-      onChangeText={text => setDatePay(text)}
+      onChangeText={(text) => setDatePay(text)}
     />
     <TextInput
       style={styles.searchBar1}
       placeholder="Filtrer par gare"
       placeholderTextColor="#000"
       value={searchStation}
-      onChangeText={text => setSearchStation(text)}
+      onChangeText={(text) => setSearchStation(text)}
     />
+
     <FlatList
-      ref={flatListRef}
       data={filteredTransactionHistory}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({ item }) => (
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.transactionItem}>
+        <View style={styles.transactionItem}>
           <Text style={styles.text}>Nature: {item.nature}</Text>
           <Text style={styles.text}>
             Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
           </Text>
           <Text style={styles.text}>Gare: {item.gare}</Text>
-          <Text style={styles.text}>Heure: {item.timePay}</Text>
-          <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
         </View>
-        </ScrollView>
-        
       )}
-      //style={{ marginBottom: 100 }}
-      // onEndReached={handleEndReached} (if needed)
-      // onEndReachedThreshold={0.1} (if needed)
+      style={styles.scrolview}
+      ref={flatListRef}
+      // Add any other FlatList props here
     />
-        <Navbar1 />
+
+    <Navbar1 />
   </View>
 );
 }
@@ -112,8 +158,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
-    top: 30,
+    top: 20,
     marginLeft: 20,
+  },
+  scrolview:{
+    width: '100%',
+    height:'50%'
   },
   searchBar1: {
     height: 40,
@@ -127,20 +177,15 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
-    top: 30,
+    top: 20,
     marginLeft: 20,
-  },
-  scrollView: {
-    marginTop: 10,
-        marginHorizontal: 20,
-        width: '90%',
   },
   transactionItem: {
     backgroundColor: '#246EC3',
     borderWidth: 0,
     borderRadius: 10,
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 1,
     marginHorizontal: 10,
   },
   text: {

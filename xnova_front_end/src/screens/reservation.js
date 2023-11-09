@@ -22,7 +22,7 @@ export default function Reservation() {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.get(`http://192.168.1.11:3005/api/users/${userId}`, {
+            axios.get(`http://192.168.8.166:3005/api/users/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
               .then(response => {

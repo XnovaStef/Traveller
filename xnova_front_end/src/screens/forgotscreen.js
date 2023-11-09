@@ -28,7 +28,7 @@ export default function ForgotScreen() {
     };
   
     axios
-      .post('http://192.168.1.11:3005/api/users/forgot', data)
+      .post('http://192.168.8.166:3005/api/users/forgot', data)
       .then((response) => {
         // Set isLoading to false when registration is successful
         setLoading(false);

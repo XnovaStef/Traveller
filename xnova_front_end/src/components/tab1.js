@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const Navbar1 = () => {
   const navigation = useNavigation();
   const [selectedIcon, setSelectedIcon] = useState('home'); // Set 'home' as the default selected icon
+  const [transactionCount, setTransactionCount] = useState(5); // Example transaction count
+  const [transactions, setTransactions] = useState(0);
 
   const iconData = [
     { name: 'heart', color: '#000', screenName: 'note', label: 'note' },
     { name: 'home', color: '#000', screenName: 'HomeCompany', label: 'home' },
     { name: 'bar-chart-2', color: '#000', screenName: 'Statistic', label: 'statistique' },
   ];
+
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.21:3005/api/countTransaction")
+      .then((response) => {
+        setTransactions(response.data.Transactions);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const handleIconPress = (iconName, screenName) => {
     setSelectedIcon(iconName === selectedIcon ? null : iconName); // Toggle selection
@@ -35,6 +49,11 @@ const Navbar1 = () => {
             {selectedIcon === icon.name && (
               <Text style={styles.iconText}>{icon.label}</Text>
             )}
+            {icon.name === 'home' && transactions > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationText}>{transactions}</Text>
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       ))}
@@ -46,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#246EC3',
+    backgroundColor: 'rgba(36, 110, 195, 0.7)',
     paddingVertical: 10,
     position: 'absolute',
     bottom: 8,
@@ -65,6 +84,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 10,
     marginTop: 4,
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: 0,
+    right: -12,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 

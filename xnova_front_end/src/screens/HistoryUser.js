@@ -3,22 +3,26 @@ import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import Navbar from '../components/tab';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HistoryScreen() {
   const [datePay, setDatePay] = useState('');
+  const [tel, setTel] = useState('');
   const [searchCompany, setSearchCompany] = useState('');
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const flatListRef = useRef(null);
 
+
+
   useEffect(() => {
     if (!isLoading) {
       setIsLoading(true);
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.187:3005/api/everyTravelInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyTravelInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -41,7 +45,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.187:3005/api/everyColisInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyColisInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -64,7 +68,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.1.11:3005/api/everyReservationInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyReservationInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -87,6 +91,29 @@ export default function HistoryScreen() {
       setPage(page + 1);
     }
   };*/
+
+  useEffect(() => {
+    AsyncStorage.getItem('accessToken')
+      .then(token => {
+        AsyncStorage.getItem('userId')
+          .then(userId => {
+            axios.get(`http://192.168.8.166:3005/api/users/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+              .then(response => {
+                console.log(response.data);
+                setTel(response.data.tel);
+              })
+              .catch(error => console.log(error));
+          })
+          .catch(error => console.log(error));
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+
+
+  
 
   const filteredTransactionHistory = transactionHistory.filter((item) => {
     const isDateMatched = !datePay || item.datePay.includes(datePay);
@@ -129,7 +156,7 @@ export default function HistoryScreen() {
         //onEndReached={handleEndReached}
         //onEndReachedThreshold={0.1}
       />
-            <Navbar />
+           
     </View>
   );
 }

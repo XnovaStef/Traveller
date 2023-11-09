@@ -10,45 +10,50 @@ import axios from 'axios';
 export default function DeleteScreen() {
   const navigation = useNavigation();
 
-  const [numero, setNumero] = useState('');
+  const LoginUser = () => {
+    navigation.navigate("LoginUser");
+  }
+
+  const [tel, setTel] = useState('');
   const [password, setPassword] = useState('');
-  const [pattern, setPattern] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const setNumeroWithCountryCode = (text) => {
     if (text.startsWith('+225')) {
-      setNumero(text);
+      setTel(text);
     } else {
-      setNumero('+225' + text);
+      setTel('+225' + text);
     }
   };
-
   const handleDelete = () => {
-    if (numero === '' || password === '' || pattern === '') {
+    if (tel === '' || password === '') {
       Alert.alert("Veuillez remplir tous les champs");
       return;
     }
-
-    // Set isLoading to true when the request starts
-    setIsLoading(true);
-
-    axios.post('http://192.168.1.11:3005/api/users/RequestUser', {
-      tel: numero,
+  
+    // Make an HTTP request to your API to delete the user account
+    axios.delete('http://192.168.8.166:3005/api/deleteUser', {
+      tel: tel,
       password: password,
-      pattern: pattern,
     })
-    .then(function (response) {
-      console.log(response);
-      Alert.alert("Opération réussie");
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .finally(() => {
-      // Set isLoading to false when the request is completed
-      setIsLoading(false);
-    });
+      .then(response => {
+        // Handle a successful response from the server
+        if (response.data.message === 'utilisateur supprimé') {
+          // Handle success, for example, navigate to a different screen
+          // You can use the `navigation` object for navigation.
+          navigation.navigate('LoginUser');
+        } else {
+          // Handle other cases as needed
+          Alert.alert(response.data.message);
+        }
+      })
+      .catch(error => {
+        // Handle error cases
+        console.error(error);
+        Alert.alert('An error occurred');
+      });
   };
+  
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -65,7 +70,7 @@ export default function DeleteScreen() {
           <TextInput
             style={styles.input}
             placeholder="Numéro"
-            value={numero}
+            value={tel}
             onChangeText={setNumeroWithCountryCode}
           />
           <TextInput
@@ -75,14 +80,7 @@ export default function DeleteScreen() {
             value={password}
             onChangeText={text => setPassword(text)}
           />
-          <TextInput
-            style={styles.patternInput}
-            placeholder="Motif de suppression"
-            multiline
-            numberOfLines={4}
-            value={pattern}
-            onChangeText={text => setPattern(text)}
-          />
+          
           {isLoading ? (
             <ActivityIndicator size="large" color="#246EC3" />
           ) : (

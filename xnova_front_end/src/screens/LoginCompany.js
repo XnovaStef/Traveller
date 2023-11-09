@@ -36,7 +36,7 @@ export default function RegisterScreenCompany1() {
     };
 
     axios
-      .post('http://192.168.1.11:3005/api/company/login1', data) // Replace with your API endpoint
+      .post('http://192.168.8.166:3005/api/company/login1', data) // Replace with your API endpoint
       .then(response => {
         // Assuming your API returns a valid token and companyId
         AsyncStorage.setItem('token', response.data.accessToken);

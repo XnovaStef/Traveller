@@ -33,7 +33,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.187:3005/api/everyTravelInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyTravelInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -56,7 +56,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.187:3005/api/everyColisInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyColisInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -79,7 +79,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.1.11:3005/api/everyReservationInfo?page=${page}`
+            `http://192.168.8.166:3005/api/everyReservationInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -155,14 +155,20 @@ export default function HistoryScreen() {
           <View style={styles.modalContent}>
             {selectedItem && (
               <>
-                <Text style={styles.modalText}>Nature: {selectedItem.nature}</Text>
-                <Text style={styles.modalText}>Date de Paiement: {selectedItem.datePay}</Text>
-                <Text style={styles.modalText}>Date de Paiement: {selectedItem.timePay}</Text>
+               
                 <QRCode
-                  value={ticketData.qrCodeData}
-                  size={120}
-                />
-                {/* Add more details here */}
+                    value={JSON.stringify({
+                      nature: selectedItem.nature,
+                      Date: selectedItem.datePay,
+                      Heure: selectedItem.timePay,
+                      Place: selectedItem.nombre_place,
+                      Destination: selectedItem.destination,
+                      Compagnie: selectedItem.Compagnie,
+                      Départ: selectedItem.heure_depart,
+                    })}
+             size={160}
+/>
+
               </>
             )}
             <Icon
@@ -237,6 +243,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     borderRadius: 10,
+    justifyContent:'center',
+
   },
   modalText: {
     fontSize: 18,
