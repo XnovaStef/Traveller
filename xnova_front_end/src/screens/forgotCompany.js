@@ -41,7 +41,7 @@ import {
         }
 
         axios
-        .post('http://192.168.8.166:3005/api/forgot1', data)
+        .post('http://192.168.8.180:3005/api/forgot1', data)
         .then((response) => {
           // Set isLoading to false when password reset is successful
           setLoading(false);

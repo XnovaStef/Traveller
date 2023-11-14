@@ -22,7 +22,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.166:3005/api/everyTravelInfo?page=${page}`
+            `http://192.168.8.180:3005/api/everyTravelInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -45,7 +45,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.166:3005/api/everyColisInfo?page=${page}`
+            `http://192.168.8.180:3005/api/everyColisInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -68,7 +68,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.166:3005/api/everyReservationInfo?page=${page}`
+            `http://192.168.8.180:3005/api/everyReservationInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -97,7 +97,7 @@ export default function HistoryScreen() {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.get(`http://192.168.8.166:3005/api/users/${userId}`, {
+            axios.get(`http://192.168.8.180:3005/api/users/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
               .then(response => {

@@ -4,7 +4,6 @@ import { useFonts } from 'expo-font';
 import { ListItem } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
-import Nav from '../components/nav';
 import axios from 'axios';
 
 export default function DeleteScreen() {
@@ -25,33 +24,39 @@ export default function DeleteScreen() {
       setTel('+225' + text);
     }
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (tel === '' || password === '') {
       Alert.alert("Veuillez remplir tous les champs");
       return;
     }
-  
-    // Make an HTTP request to your API to delete the user account
-    axios.delete('http://192.168.8.166:3005/api/deleteUser', {
-      tel: tel,
-      password: password,
-    })
-      .then(response => {
-        // Handle a successful response from the server
-        if (response.data.message === 'utilisateur supprimé') {
-          // Handle success, for example, navigate to a different screen
-          // You can use the `navigation` object for navigation.
-          navigation.navigate('LoginUser');
-        } else {
-          // Handle other cases as needed
-          Alert.alert(response.data.message);
-        }
-      })
-      .catch(error => {
-        // Handle error cases
-        console.error(error);
-        Alert.alert('An error occurred');
+
+    setIsLoading(true); // Définissez isLoading sur true pour afficher l'indicateur de chargement
+
+    try {
+      // Envoyez une demande DELETE à votre API pour supprimer l'utilisateur
+      const response = await axios.delete('http://192.168.8.180:3005/api/deleteUser', {
+        data: {
+          tel: tel,
+          password: password,
+        },
       });
+
+      // Vérifiez la réponse de l'API pour voir si la suppression a réussi
+      if (response.status === 200) {
+        Alert.alert("L'utilisateur a été supprimé avec succès.");
+        // Réinitialisez les champs et isLoading après la suppression réussie
+        setTel('');
+        setPassword('');
+        LoginUser()
+      } else {
+        Alert.alert("La suppression de l'utilisateur a échoué.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur : ", error);
+      Alert.alert("Une erreur s'est produite lors de la suppression de l'utilisateur.");
+    } finally {
+      setIsLoading(false); // Réinitialisez isLoading après la suppression ou en cas d'erreur
+    }
   };
   
 

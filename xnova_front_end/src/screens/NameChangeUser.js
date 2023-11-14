@@ -6,6 +6,7 @@ import Nav from '../components/nav';
 import Navbar1 from '../components/tab1';
 import NavUser from '../components/navUser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from 'axios';
 
 export default function NameScreen() {
@@ -23,7 +24,7 @@ export default function NameScreen() {
           .then((userId) => {
             axios
               .put(
-                `http://192.168.8.166:3005/api/users/${userId}/updateName`,
+                `http://192.168.8.180:3005/api/users/${userId}/updateName`,
                 {
                   pseudo: pseudo,
                   password: password,

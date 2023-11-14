@@ -28,7 +28,7 @@ export default function DeleteScreenCompany() {
       return;
     }
 
-    axios.post('http://192.168.8.166:3005/api/companies/RequestCompany', {
+    axios.post('http://192.168.8.180:3005/api/companies/RequestCompany', {
       email: email,
       password: password,
       pattern: pattern,
@@ -36,6 +36,7 @@ export default function DeleteScreenCompany() {
       .then(function (response) {
         console.log(response);
         Alert.alert("Opération réussie")
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -51,9 +52,10 @@ export default function DeleteScreenCompany() {
       <View style={styles.global}>
         <StatusBar style="dark" />
         <View style={styles.header}>
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 25 }}>
+        <Text style={{ color: '#fff', fontWeight: '700', fontSize: 25 }}>
   Suppression de compte
 </Text>
+
 
         </View>
         <View style={styles.delete}>

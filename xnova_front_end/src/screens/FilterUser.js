@@ -69,7 +69,7 @@ export default function FilterScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.166:3005/api/getDestinationTravel?page=${page}`
+            `http://192.168.8.180:3005/api/getDestinationTravel?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
