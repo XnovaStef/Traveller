@@ -34,7 +34,7 @@ export default function DeleteScreen() {
 
     try {
       // Envoyez une demande DELETE à votre API pour supprimer l'utilisateur
-      const response = await axios.delete('http://192.168.8.180:3005/api/deleteUser', {
+      const response = await axios.delete('http://192.168.8.197:3005/api/user/deleteUser', {
         data: {
           tel: tel,
           password: password,

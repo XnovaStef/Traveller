@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native'; // Import the necessary navigation hook
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function PayScreen() {
   const navigation = useNavigation(); // Initialize the navigation object
+  
+
+  const route = useRoute();
+
+  // Check if route.params exists before destructuring
+  const { companyName, companyDestinations } = route.params || {};
+
+
+  console.log(route.params);
+  
 
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);

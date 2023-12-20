@@ -1,44 +1,106 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Modal, Pressable } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Alert, Modal } from 'react-native';
+import axios from 'axios';
+import { StatusBar } from 'expo-status-bar';
+import Navbar from '../components/tab';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Pop_Up from '../components/pop-up';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Filter() {
-  const [filterText, setFilterText] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
+  const [datePay, setDatePay] = useState('');
+  const [searchCompany, setSearchCompany] = useState('');
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const flatListRef = useRef(null);
+  const [destinationFilter, setDestinationFilter] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+
   const [showModal, setShowModal] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState(null);
 
+  const navigation = useNavigation();
 
-  const destinations = [
-    { id: 1, name: 'Bondoukou' },
-    { id: 2, name: 'Man' },
-    { id: 3, name: 'Daloa' },
-    { id: 4, name: 'Dabou' },
-    { id: 5, name: 'Bonoua' },
-    { id: 6, name: 'Bouna' },
-    { id: 7, name: 'Bouaké' },
-    { id: 8, name: 'Abidjan' },
-    { id: 9, name: 'Divo' },
-  ];
+  const route = useRoute();
+  const { companyName, companyDestinations } = route.params; // Récupération du nom de la compagnie
 
-  const handleFilter = (text) => {
-    const filteredDestinations = destinations.filter(destination =>
-      destination.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilterText(text);
-    setFilteredData(filteredDestinations);
-  };
+ /* useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.125:3005/api/everyTravelInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
 
-  const renderDestinationItem = ({ item }) => (
-    <View style={styles.destinationItem}>
-      <TouchableOpacity onPress={() => handleOptionPress(item)} style={{ left: '90%' }}>
-        <Icon name="ellipsis-v" size={20} color="#fff" />
-      </TouchableOpacity>
-      <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>{item.name}</Text>
-    </View>
-  );
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.125:3005/api/everyColisInfo?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  // }, [page])*/
+/*
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.8.197:3005/api/getDestinationTravel?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
+
+  /*const handleEndReached = () => {
+    if (!isLoading) {
+      flatListRef.current.scrollToEnd({ animated: true });
+      setPage(page + 1);
+    }
+  };*/
 
   const handleOptionPress = (destination) => {
     setSelectedDestination(destination);
@@ -49,21 +111,44 @@ export default function Filter() {
   };
   
 
+  const filteredTransactionHistory = companyDestinations.filter((item) => {
+    const isDestinationMatched = !destinationFilter || item.toLowerCase().includes(destinationFilter.toLowerCase());
+    return isDestinationMatched;
+  });
+  
+  
+  
+
   return (
-    <View style={styles.container}>
+    <View style={styles.global}>
+      <StatusBar style='dark' />
+      <View>
+      <Text style={{ fontSize: 45, color: "#fff", fontWeight: 'bold' }}>Destination {companyName}</Text>
+
+      </View>
       <TextInput
-        style={styles.input}
-        placeholder="Destination"
-        value={filterText}
-        onChangeText={handleFilter}
-      />
-      <FlatList
-        style={styles.flatList}
-        data={filteredData.length > 0 ? filteredData : destinations}
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderDestinationItem}
-      />
-      <Modal
+  style={styles.searchBar}
+  placeholder="destination..."
+  placeholderTextColor="#000"
+  value={destinationFilter}
+  onChangeText={(text) => setDestinationFilter(text)}
+/>
+
+<FlatList
+  data={filteredTransactionHistory} // Utilisation de filteredTransactionHistory pour afficher les destinations filtrées
+  keyExtractor={(item, index) => index.toString()}
+  renderItem={({ item }) => (
+    <TouchableOpacity onPress={() => handleOptionPress(item)}>
+      <View style={styles.transactionItem}>
+      <Text style={styles.text}>{item.destinationTravel}</Text>
+
+      </View>
+    </TouchableOpacity>
+  )}
+/>
+
+
+<Modal
         animationType="fade"
         transparent={true}
         visible={showModal}
@@ -81,42 +166,57 @@ export default function Filter() {
           </View>
         </View>
       </Modal>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+ global: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 10,
+    marginTop: 40, // Add margin to separate from the top
+    backgroundColor: '#246EC3',
   },
-  input: {
+  searchBar: {
     height: 40,
-    borderColor: '#000', // Adjust border color
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 8,
-    marginBottom: 40,
-    top: 20,
-    color: '#fff',
+    width: '90%',
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    color: '#000',
+    paddingHorizontal: 10,
+    marginBottom: 10, // Reduce margin for the search bar
+    shadowOpacity: 0.5,
     shadowColor: '#000',
-    shadowOffset: { width: 3, height: 3 },
+    shadowOffset: { width: 0, height: 3 },
     elevation: 4,
-    shadowOpacity: 1,
+    marginLeft:20
   },
-  flatList: {
-    flex: 1,
-  },
-  destinationItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderColor: 'lightgray',
-    height: 60,
-    weight: 10,
+  transactionItem: {
     backgroundColor: '#F36210',
-    justifyContent: 'center',
+    borderWidth: 0,
+    borderRadius: 70, // Utilisez un nombre suffisamment élevé pour obtenir une forme circulaire
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    width:300,
+    height:130,
+    marginLeft:'8%',
+    shadowOpacity: 0.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+
+
   },
+  text: {
+    color: '#246EC3',
+    fontWeight: 'bold',
+textAlign:'center',
+padding:50,
+fontSize:15
+  },
+
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -124,12 +224,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    height:'60%',
-    width:'90%'
+    alignItems: 'center',
+    height:500
   },
+
   closeIcon: {
     position: 'absolute',
 top: 10, // Adjust the top position to your desired distance from the top edge

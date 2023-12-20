@@ -28,7 +28,7 @@ export default function DeleteScreenCompany() {
       return;
     }
 
-    axios.post('http://192.168.8.180:3005/api/companies/RequestCompany', {
+    axios.post('http://192.168.8.197:3005/api/company/companies/RequestCompany', {
       email: email,
       password: password,
       pattern: pattern,

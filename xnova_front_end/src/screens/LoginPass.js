@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, Text, View, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import Navbar from '../components/tab';
-import Background from '../components/background';
+import { StatusBar, TouchableWithoutFeedback, Keyboard, View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -10,18 +7,16 @@ import axios from 'axios';
 export default function LoginPass() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
-
   const navigation = useNavigation(); 
 
   const Ticket = () => {
     setLoading(true);
-
     const data = {
       code: code
     };
 
     axios
-      .post('http://192.168.8.180:3005/api/user/loginPass', data)
+      .post('http://192.168.8.197:3005/api/user/loginPass', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('passId', response.data.passId);
@@ -40,31 +35,32 @@ export default function LoginPass() {
           Alert.alert('Une erreur s\'est produite. Veuillez réessayer plus tard.');
         }
       });
-      
   };
 
   return (
-    <View style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-      <StatusBar style='dark' />
-      <Navbar />
-      <Text style={styles.text}>Veuillez saisir le code envoyé par SMS</Text>
-      <TextInput
-        style={styles.TextInput}
-        underlineColorIos="rgba(0,0,0,0)"
-        placeholder="T-2304"
-        value={code}
-        onChangeText={setCode}
-        secureTextEntry={false}
-        placeholderTextColor="#AAA1A1"
-      />
-      <TouchableOpacity style={styles.btn} onPress={Ticket} disabled={loading}>
-        {loading ? (
-          <ActivityIndicator size="small" color="#ffffff" />
-        ) : (
-          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Voir</Text>
-        )}
-      </TouchableOpacity>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+        <StatusBar style='dark' />
+        <Text style={styles.text}>Veuillez saisir le code envoyé par SMS</Text>
+        <TextInput
+  style={styles.TextInput}
+  underlineColorIos="rgba(0,0,0,0)"
+  placeholder="T-2304"
+  value={code}
+  onChangeText={setCode}
+  keyboardType="numeric" // Utilisation du clavier numérique
+  placeholderTextColor="#AAA1A1"
+/>
+
+        <TouchableOpacity style={styles.btn} onPress={Ticket} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator size="small" color="#ffffff" />
+          ) : (
+            <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>Voir</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

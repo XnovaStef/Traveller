@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import Navbar from '../components/tab';
@@ -69,7 +69,7 @@ export default function FilterScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.180:3005/api/getDestinationTravel?page=${page}`
+            `http://192.168.8.197:3005/api/user/getDestinationTravel?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -93,8 +93,30 @@ export default function FilterScreen() {
     }
   };*/
 
-  const handleItemPress = () => {
-    navigation.navigate("Filter");
+  const handleItemPress = (item) => {
+    const selectedCompany = item.compagnie;
+    const destinationsOfSelectedCompany = transactionHistory
+      .filter((transaction) => transaction.compagnie === selectedCompany)
+      .map((transaction) => {
+        return {
+          destinationTravel: transaction.destinationTravel,
+          tarifTravel: transaction.tarifTravel,
+          gareTravel: transaction.gareTravel,
+          destinationColis: transaction.destinationColis,
+          tarifColis: transaction.tarifColis,
+          gareColis: transaction.gareColis,
+          depart: transaction.depart
+        };
+      });
+
+      console.log("Destinations de cette compagnie :", destinationsOfSelectedCompany)
+  
+    navigation.navigate("Filter", {
+      companyName: selectedCompany,
+      companyDestinations: destinationsOfSelectedCompany,
+
+      
+    });
   };
   
 
@@ -108,6 +130,7 @@ export default function FilterScreen() {
   
 
   return (
+  
     <View style={styles.global}>
       <StatusBar style='dark' />
       <TextInput
@@ -147,6 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     marginTop: 40, // Add margin to separate from the top
+    backgroundColor: '#246EC3',
   },
   searchBar: {
     height: 40,
@@ -174,7 +198,7 @@ const styles = StyleSheet.create({
     marginLeft:'25%',
     shadowOpacity: 0.5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 4, height: 6 },
     elevation: 4,
 
 

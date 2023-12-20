@@ -53,7 +53,7 @@ const Login = () =>{
     };
   
     axios
-      .post('http://192.168.8.180:3005/api/register', data)
+      .post('http://192.168.8.197:3005/api/user/register', data)
       .then((response) => {
         console.log(data);
         console.log(response.data);

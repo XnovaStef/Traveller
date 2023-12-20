@@ -15,7 +15,7 @@ export default function EmailScreen() {
       .then(token => {
         AsyncStorage.getItem('companyId')
           .then(companyId => {
-            axios.put(`http://192.168.8.180:3005/api/companies/${companyId}/updateCompanyEmail`, {
+            axios.put(`http://192.168.8.197:3005/api/company/companies/${companyId}/updateCompanyEmail`, {
               newEmail: newEmail,
               password: password
             }, {

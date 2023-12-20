@@ -1,9 +1,15 @@
 import { StyleSheet, Text, View, Alert, Button, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 
 export default function VoyagesScreen() {
   const [selectedPlaces, setSelectedPlaces] = useState(null);
   const [selectedDepartureTime, setSelectedDepartureTime] = useState('');
+
+  const navigation = useNavigation();
+
+
 
   const handlePayButtonPress = () => {
     Alert.alert('Payment');

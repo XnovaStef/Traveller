@@ -1,19 +1,49 @@
 import 'react-native-gesture-handler';
 import { Text, View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 import { Linking } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function Pop_Up() {
   const [isChecked, setIsChecked] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(true); // State for controlling the popup
   const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState(1);
   const navigation = useNavigation();
-
+  const [isLoading, setIsLoading] = useState(false);
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
   };
+
+  const route = useRoute();
+  const { companyName, companyDestinations } = route.params; // Récupération du nom de la compagnie
+
+
+
+  /*
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `http://192.168.1.11:3005/api/getDestinationTravel?page=${page}`
+          );
+         
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page]);
+  */
+
+  
 
   const openGoogleMaps = () => {
     const latitude = 123.400; // Replace with the actual latitude of the destination
@@ -33,14 +63,23 @@ export default function Pop_Up() {
     setIsPopupOpen(false); // Close the popup after navigating
   };
 
+  const renderCompanyDestinations = () => {
+    return companyDestinations.map((destination, index) => (
+      <View key={index} style={styles.infoContainer}>
+        <Text style={styles.text}>Tarif Voyage: {destination.tarifTravel}</Text>
+        <Text style={styles.text}>Gare Voyage: {destination.gareTravel}</Text>
+        <Text style={styles.text}>Gare Colis: {destination.gareColis}</Text>
+       
+      </View>
+    ));
+  };
+
   return (
     <View style={styles.global}>
       {isPopupOpen && ( // Render the popup only if isPopupOpen is true
         <View style={styles.popupContainer}>
           <View style={styles.infoContainer}>
-            <Text style={styles.text}>Voyages: 7000fcfa</Text>
-            <Text style={styles.text}>Gares: Koumassi</Text>
-            <Text style={styles.text}>Horaires: 7h - 20h</Text>
+          {renderCompanyDestinations()}
           </View>
 
           {/* Button to open Google Maps */}

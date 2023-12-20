@@ -41,7 +41,7 @@ export default function LoginUser() {
     };
 
     axios
-      .post('http://192.168.8.180:3005/api/login', data)
+      .post('http://192.168.8.197:3005/api/user/login', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('userId', response.data.userId);

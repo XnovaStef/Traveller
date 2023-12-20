@@ -32,7 +32,7 @@ export default function CompagnyScreen() {
     .then(token => {
         AsyncStorage.getItem('companyId')
         .then(companyId => {
-            axios.put(`http://192.168.8.180:3005/api/companies/${companyId}/updateCompany`, {
+            axios.put(`http://192.168.8.197:3005/api/company/companies/${companyId}/updateCompany`, {
             compagnie: compagnie,
             password: password
             }, {
@@ -40,6 +40,10 @@ export default function CompagnyScreen() {
             })
             .then(response => {
                 console.log(response.data);
+                Alert.alert(
+                  'Succès',
+                  'Reconnectez-vous pour voir les modifications'
+                );
 
             })
             .catch(error => {

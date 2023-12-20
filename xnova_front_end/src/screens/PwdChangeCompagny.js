@@ -28,7 +28,7 @@ export default function PwdCompagny() {
     .then(token => {
         AsyncStorage.getItem('companyId')
         .then(companyId => {
-            axios.put(`http://192.168.8.180:3005/api/companies/${companyId}/updateCompanyPwd`, {
+            axios.put(`http://192.168.8.197:3005/api/company/companies/${companyId}/updateCompanyPwd`, {
               currentPassword: currentPassword,
               newPassword: newPassword
             }, {

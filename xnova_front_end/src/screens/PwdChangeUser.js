@@ -32,7 +32,7 @@ export default function PwdScreen() {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.put(`http://192.168.8.180:3005/api/users/${userId}/updatePassword`, {
+            axios.put(`http://192.168.8.197:3005/api/user/users/${userId}/updatePassword`, {
               currentPassword: currentPassword,
               newPassword: newPassword
             }, {
