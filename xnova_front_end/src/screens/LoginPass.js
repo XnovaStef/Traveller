@@ -16,7 +16,7 @@ export default function LoginPass() {
     };
 
     axios
-      .post('http://192.168.8.197:3005/api/user/loginPass', data)
+      .post('https://xnova-back-end.onrender.com/api/user/loginPass', data)
       .then(response => {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('passId', response.data.passId);

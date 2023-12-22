@@ -33,7 +33,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.197:3005/api/user/everyTravelInfo?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -56,7 +56,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.197:3005/api/user/everyColisInfo?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -79,7 +79,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.197:3005/api/user/everyReservationInfo?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {

@@ -69,7 +69,7 @@ export default function FilterScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `http://192.168.8.197:3005/api/user/getDestinationTravel?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/getDestinationTravel?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {

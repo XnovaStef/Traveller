@@ -16,7 +16,7 @@ const NavUser = () => {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.get(`http://192.168.8.197:3005/api/user/users/${userId}`, {
+            axios.get(`https://xnova-back-end.onrender.com/api/user/users/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             })
               .then(response => {

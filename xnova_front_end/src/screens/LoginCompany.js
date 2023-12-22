@@ -36,7 +36,7 @@ export default function RegisterScreenCompany1() {
     };
 
     axios
-      .post('http://192.168.8.197:3005/api/company/login', data) // Replace with your API endpoint
+      .post('https://xnova-back-end.onrender.com/api/company/login', data) // Replace with your API endpoint
       .then(response => {
         // Assuming your API returns a valid token and companyId
         AsyncStorage.setItem('token', response.data.accessToken);

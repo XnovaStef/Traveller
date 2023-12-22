@@ -9,7 +9,7 @@ export default function WeekFilter() {
   useEffect(() => {
     console.log('Fetching statistics...');
     // Appelle l'API pour récupérer les statistiques en utilisant Axios
-    axios.get('http://192.168.8.197:3005/api/user/statistics')
+    axios.get('https://xnova-back-end.onrender.com/api/user/statistics')
       .then(response => {
         console.log('API response:', response.data);
         const { travelCount, reservationCount, colisCount } = response.data;
