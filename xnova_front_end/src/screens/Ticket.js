@@ -6,6 +6,7 @@ import Navbar from '../components/tab';
 import QRCode from 'react-native-qrcode-svg';
 import * as Animatable from 'react-native-animatable'; // Import Animatable
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 export default function HistoryScreen() {
@@ -27,28 +28,8 @@ export default function HistoryScreen() {
     paymentTime: '14:30',
   };
 
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page]);
+  const route = useRoute();
+  const { tel } = route.params; // Récupération du nom de la compagnie
 
   useEffect(() => {
     if (!isLoading) {
@@ -56,7 +37,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/everyTravelInfoTel/${tel}?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -71,7 +52,7 @@ export default function HistoryScreen() {
       };
       fetchData();
     }
-  }, [page]);
+  }, [page, tel]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -79,7 +60,7 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`
+            `https://xnova-back-end.onrender.com/api/user/everyColisInfoTel/${tel}?page=${page}`
           );
           const newData = response.data;
           if (newData.length > 0) {
@@ -94,7 +75,30 @@ export default function HistoryScreen() {
       };
       fetchData();
     }
-  }, [page]);
+  }, [page, tel]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://xnova-back-end.onrender.com/api/user/everyReservationInfoTel/${tel}?page=${page}`
+          );
+          const newData = response.data;
+          if (newData.length > 0) {
+            setTransactionHistory((prevData) => [...prevData, ...newData]);
+            setPage(page + 1);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [page, tel]);
 
   const filteredTransactionHistory = transactionHistory.filter((item) => {
     const isDateMatched = !datePay || item.datePay.includes(datePay);
@@ -137,6 +141,7 @@ export default function HistoryScreen() {
                   Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
                 </Text>
                 <Text style={styles.text}>Heure: {item.timePay}</Text>
+                <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
               </View>
             </TouchableOpacity>
           )}

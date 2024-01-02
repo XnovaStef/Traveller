@@ -4,6 +4,8 @@ import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import Navbar from '../components/tab';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
+
 
 export default function FilterScreen() {
   const [datePay, setDatePay] = useState('');
@@ -133,6 +135,18 @@ export default function FilterScreen() {
   
     <View style={styles.global}>
       <StatusBar style='dark' />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          top: 10,
+          left: 0,
+          padding: 10,
+        }}
+      >
+        {/* Utilisation de l'icône de flèche */}
+        <Icon name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
       <TextInput
   style={styles.searchBar}
   placeholder="destination..."
@@ -184,7 +198,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
-    marginLeft:20
+    marginLeft:40
   },
   transactionItem: {
     backgroundColor: '#fff',

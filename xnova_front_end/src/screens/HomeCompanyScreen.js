@@ -89,15 +89,33 @@ export default function HomeCompanyScreen() {
     }
   }, [page]);
 
+/*
+  const convertDateFormat = (inputDate) => {
+    if (!inputDate) return '';
+  
+    const [day, month, year] = inputDate.split('-');
+    const formattedDate = year + '-' + month + '-' + day;
+    return formattedDate;
+  };
+
+  const formattedDate = datePay ? convertDateFormat(datePay) : '';*/
+
+  const filteredTransactionHistory = transactionHistory.filter((item) => {
+    const isDateMatched = !datePay || item.datePay.includes(datePay);
+  
+    return isDateMatched;
+  });
+  
+  
   
 
-  // Update the transaction filter logic to include date and station
-const filteredTransactionHistory = transactionHistory.filter(item => {
-  const isDateMatched = !datePay || item.datePay.includes(datePay);
-  const isStationMatched = !searchStation || item.gare.toLowerCase().includes(searchStation.toLowerCase());
-  return isDateMatched && isStationMatched;
-});
 
+// Sort the filtered transactions by date in descending order
+const sortedTransactionHistory = [...filteredTransactionHistory].sort((a, b) => {
+  const dateA = new Date(a.datePay).getTime();
+  const dateB = new Date(b.datePay).getTime();
+  return dateB - dateA; // Sort in descending order (most recent first)
+});
 
 return (
   <View style={styles.global}>
@@ -105,28 +123,26 @@ return (
     <Nav />
 
     <TextInput
-      style={styles.searchBar}
-      placeholder="Filtrer par date (YYYY-MM-DD)"
-      placeholderTextColor="#000"
-      value={datePay}
-      onChangeText={(text) => setDatePay(text)}
-    />
-    <TextInput
-      style={styles.searchBar1}
-      placeholder="Filtrer par gare"
-      placeholderTextColor="#000"
-      value={searchStation}
-      onChangeText={(text) => setSearchStation(text)}
-    />
+  style={styles.searchBar}
+  placeholder="Filtrer par date (MM-DD-YYYY)"
+  placeholderTextColor="#000"
+  value={datePay} // Assure-toi que cette valeur est correcte
+  onChangeText={(text) => {
+    console.log('New value entered:', text);
+    setDatePay(text);
+  }}
+
+/>
+
 
     <FlatList
-      data={filteredTransactionHistory}
+      data={sortedTransactionHistory}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({ item }) => (
         <View style={styles.transactionItem}>
           <Text style={styles.text}>Nature: {item.nature}</Text>
           <Text style={styles.text}>
-            Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
+            Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString('fr-FR') : 'N/A'}
           </Text>
           <Text style={styles.text}>Gare: {item.gare}</Text>
         </View>
@@ -153,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: '#000',
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 20,
     shadowOpacity: 0.5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },

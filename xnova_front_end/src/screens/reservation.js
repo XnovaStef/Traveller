@@ -6,7 +6,7 @@ import CountryPicker from 'react-native-country-picker-modal';
 import ServiceBox from '../components/ServicesBox';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React, { useState, useEffect } from 'react';
-import {  useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -16,6 +16,7 @@ import axios from 'axios';
 export default function Reservation() {
 
   const [pseudo, setPseudo] = useState('');
+
 
   useEffect(() => {
     AsyncStorage.getItem('accessToken')

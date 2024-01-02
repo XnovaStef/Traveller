@@ -4,12 +4,19 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function RegisterScreenCompany1() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false); 
+
   const navigation = useNavigation();
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const ForgotComp = () => {
     navigation.navigate('ForgotComp');
@@ -66,13 +73,20 @@ export default function RegisterScreenCompany1() {
           onChangeText={text => setEmail(text)}
         />
 
-        <TextInput
+<TextInput
           style={styles.input}
           value={password}
           onChangeText={text => setPassword(text)}
           placeholder="G-1200"
-          secureTextEntry={true}
+          secureTextEntry={!passwordVisible} // Affichage sécurisé en fonction de l'état passwordVisible
         />
+        {/* Bouton pour basculer entre afficher et masquer le mot de passe */}
+        <TouchableOpacity
+          style={{ position: 'absolute', right: 45, top: '44%' }} // Ajustez la position selon votre mise en page
+          onPress={togglePasswordVisibility}
+        >
+          <Ionicons name={passwordVisible ? 'eye-off' : 'eye'} size={24} color="black" />
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.LoginButton, isNextButtonDisabled() ? styles.nextButtonDisabled : null]}

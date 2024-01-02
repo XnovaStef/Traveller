@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import Navbar from '../components/tab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 
 export default function HistoryScreen() {
   const [datePay, setDatePay] = useState('');
-  const [tel, setTel] = useState('');
   const [searchCompany, setSearchCompany] = useState('');
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const flatListRef = useRef(null);
+
 
 
 
@@ -91,7 +93,7 @@ export default function HistoryScreen() {
       setPage(page + 1);
     }
   };*/
-
+/*
   useEffect(() => {
     AsyncStorage.getItem('accessToken')
       .then(token => {
@@ -109,7 +111,7 @@ export default function HistoryScreen() {
           .catch(error => console.log(error));
       })
       .catch(error => console.log(error));
-  }, []);
+  }, []);*/
 
 
 
@@ -122,41 +124,44 @@ export default function HistoryScreen() {
     return isDateMatched && isCompanyMatched;
   });
 
+  const sortedTransactionHistory = [...filteredTransactionHistory].sort((a, b) => {
+    const dateA = new Date(a.datePay).getTime();
+    const dateB = new Date(b.datePay).getTime();
+    return dateB - dateA; // Sort in descending order (most recent first)
+  });
+
   return (
+
     <View style={styles.global}>
       <StatusBar style='dark' />
+
       <TextInput
         style={styles.searchBar1}
         placeholder="Filtrer par date (YYYY-MM-DD)"
         placeholderTextColor="#000"
         value={datePay}
-        onChangeText={(text) => setDatePay(text)}
-      />
+        onChangeText={(text) => setDatePay(text)} />
       <TextInput
         style={styles.searchBar}
         placeholder="Filtrer par compagnie"
         placeholderTextColor="#000"
         value={searchCompany}
-        onChangeText={(text) => setSearchCompany(text)}
-      />
+        onChangeText={(text) => setSearchCompany(text)} />
       <FlatList
         ref={flatListRef}
-        data={filteredTransactionHistory}
+        data={sortedTransactionHistory}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.transactionItem}>
             <Text style={styles.text}>Nature: {item.nature}</Text>
             <Text style={styles.text}>
-              Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
+              Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString('fr-FR') : 'N/A'}
             </Text>
             <Text style={styles.text}>Gare: {item.gare}</Text>
             <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
           </View>
-        )}
-        //onEndReached={handleEndReached}
-        //onEndReachedThreshold={0.1}
-      />
-           
+        )} />
+
     </View>
   );
 }
@@ -200,9 +205,8 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 10,
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 1,
     marginHorizontal: 10,
-
   },
   text: {
     color: '#fff',

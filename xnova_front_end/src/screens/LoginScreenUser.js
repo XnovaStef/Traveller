@@ -5,6 +5,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginUser() {
   const [value, setValue] = useState("");
@@ -12,8 +13,13 @@ export default function LoginUser() {
   const [enter, setEnter] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
 
   const navigation = useNavigation(); 
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const Forgot = () => {
     navigation.navigate("Forgot");
@@ -89,15 +95,24 @@ export default function LoginUser() {
             codeTextStyle={{ color: '#AAA1A1' }}
           />
 
-          <TextInput
-            style={styles.TextInput1}
-            underlineColorIos="rgba(0,0,0,0)"
-            placeholder="Mot de passe"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-            placeholderTextColor="#AAA1A1"
-          />
+
+
+<TextInput
+  style={styles.TextInput1}
+  underlineColorIos="rgba(0,0,0,0)"
+  placeholder="Mot de passe"
+  value={password}
+  onChangeText={setPassword}
+  secureTextEntry={!showPassword} // Affichage du mot de passe en fonction de l'état showPassword
+  placeholderTextColor="#AAA1A1"
+/>
+
+<TouchableOpacity
+  style={{ position: 'absolute', right: 10, top: '35%' }}
+  onPress={toggleShowPassword}
+>
+  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
+</TouchableOpacity>
 
           <TouchableOpacity style={styles.forgot} onPress={Forgot}>
             <Text style={{ color: '#F36210', fontSize: 11, fontWeight: '500' }}>Mot de passe oublié</Text>

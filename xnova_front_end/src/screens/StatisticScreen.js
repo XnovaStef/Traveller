@@ -34,62 +34,7 @@ const StatisticScreen = () => {
             top:25
           }}
         >
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              height: 55,
-              backgroundColor: selectedTab === 0 ? COLORS.orange : COLORS.white,
-              borderRadius: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              shadowOpacity: selectedTab === 0 ? 0.5 : 0,
-              shadowColor: 'black',
-              shadowOffset: { width: 0, height: 2 },
-              elevation: 4,
-            }}
-            onPress={() => {
-              setSelectedTab(0);
-            }}
-          >
-            <Text
-              style={{
-                color: selectedTab === 0 ? COLORS.white : COLORS.black,
-                fontSize: 15,
-                fontWeight: 'bold',
-              }}
-            >
-              24 heures
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              height: 55,
-              backgroundColor: selectedTab === 1 ? COLORS.orange : COLORS.white,
-              borderRadius: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-              shadowOpacity: selectedTab === 1 ? 0.5 : 0,
-              shadowColor: COLORS.black,
-              shadowOffset: { width: 0, height: 2 },
-              elevation: 4,
-              left:5
-            }}
-            onPress={() => {
-              setSelectedTab(1);
-              
-            }}
-          >
-            <Text
-              style={{
-                color: selectedTab === 1 ? COLORS.white : COLORS.black,
-                fontSize: 15,
-                fontWeight: 'bold',
-              }}
-            >
-              une semaine
-            </Text>
-          </TouchableOpacity>
+         
         </View>
 
         

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+
 export default function PayScreen() {
   const navigation = useNavigation(); // Initialize the navigation object
   
@@ -46,6 +47,18 @@ export default function PayScreen() {
     <View style={styles.global}>
       <StatusBar style='dark' />
       <View style={styles.header}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          top: 30,
+          left: 20,
+          padding: 10,
+        }}
+      >
+        {/* Utilisation de l'icône de flèche */}
+        <Icon name="arrow-left" size={24} color="#246EC3" />
+      </TouchableOpacity>
         <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 30 }}>Paiement</Text>
       </View>
       <View style={styles.check}>

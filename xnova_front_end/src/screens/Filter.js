@@ -6,6 +6,7 @@ import Navbar from '../components/tab';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Pop_Up from '../components/pop-up';
 import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
 
 export default function Filter() {
   const [datePay, setDatePay] = useState('');
@@ -122,8 +123,20 @@ export default function Filter() {
   return (
     <View style={styles.global}>
       <StatusBar style='dark' />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 5,
+          padding: 10,
+        }}
+      >
+        {/* Utilisation de l'icône de flèche */}
+        <Icon name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
       <View>
-      <Text style={{ fontSize: 45, color: "#fff", fontWeight: 'bold' }}>Destination {companyName}</Text>
+      <Text style={{ fontSize: 45, color: "#fff", fontWeight: 'bold', left:'35%' }}>{companyName}</Text>
 
       </View>
       <TextInput
