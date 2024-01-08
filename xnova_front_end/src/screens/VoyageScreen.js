@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
 import DropDownPicker from 'react-native-dropdown-picker';
+import RNPickerSelect from "react-native-picker-select";
 
 export default function VoyagesScreen() {
   const [selectedPlaces, setSelectedPlaces] = useState(null);
@@ -11,8 +12,12 @@ export default function VoyagesScreen() {
   const [placesCount, setPlacesCount] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const navigation = useNavigation();
+
+  const route = useRoute();
+  const { companyName, companyDestinations } = route.params || {};
 
 
 
@@ -46,42 +51,22 @@ export default function VoyagesScreen() {
         <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}>Paiement voyage</Text>
       </View>
       <View style={styles.inputsContainer}>
-        {/* DropDown pour le nombre de places */}
-        <DropDownPicker
-          items={[
-            { label: '1 place', value: 1 },
-            { label: '2 places', value: 2 },
-            
-            
-          ]}
-          defaultValue={placesCount}
-          containerStyle={{ height: 50, width: 300, marginBottom: 30 }}
-          placeholder="Nombre de place"
-          style={{ backgroundColor: '#FFF',  borderColor:"#FFF"  }}
-          itemStyle={{
-            justifyContent: 'flex-start',
-          }}
-          dropDownStyle={{ backgroundColor: '#FFF' }}
-          onChangeItem={(item) => setPlacesCount(item.value)}
+      <TextInput
+          style={styles.textInput}
+          placeholder="Nombre de places"
+          value={selectedPlaces}
+          onChangeText={(text) => setSelectedPlaces(text)}
         />
 
         {/* DropDown pour les heures de départ */}
-        <DropDownPicker
-          items={[
-            { label: '08:00', value: '08:00' },
-            { label: '10:00', value: '10:00' },
-           
-          ]}
-          defaultValue={selectedDepartureTime}
-          containerStyle={{ height: 50, width: 300, marginBottom: 10 }}
-          placeholder="Heures de départ"
-          style={{ backgroundColor: '#FFF',  borderColor:"#FFF"  }}
-          itemStyle={{
-            justifyContent: 'flex-start',
-          }}
-          dropDownStyle={{ backgroundColor: '#FFF',}}
-          onChangeItem={(item) => setSelectedDepartureTime(item.value)}
-        />
+        <RNPickerSelect
+onValueChange={(value) => setSelectedTime(value)}
+  items={companyDestinations.map((destination) => ({
+    label: destination.depart,
+    value: destination.depart, // Utiliser la propriété "depart" comme valeur
+  }))}
+  style={pickerSelectStyles}
+/>
 
 <TouchableOpacity
           onPress={handlePayButtonPress}
@@ -135,7 +120,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   textInput: {
-    width: 300,
+    width: 340,
     height: 50,
     borderColor: '#fff',
     borderWidth: 1,
@@ -143,6 +128,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     top: 30,
     backgroundColor: '#fff',
-    left: 15,
+    left: 5,
   },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30 ,// to ensure the text is never behind the icon
+    backgroundColor : "#fff",
+    marginTop: 50,
+  },
+  inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: '#fff',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+      backgroundColor : "black",
+      marginTop: 50,
+  }
 });

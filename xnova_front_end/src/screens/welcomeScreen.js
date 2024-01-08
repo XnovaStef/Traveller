@@ -8,11 +8,11 @@ import HelpScreen from '../components/OnbordingScreen';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const logoWidth = windowWidth * 0.6;
-const logoHeight = logoWidth * 0.25;
-const logoMarginTop = windowHeight * 0.1;
+const logoHeight = logoWidth * 0.60;
+const logoMarginTop = windowHeight * 0;
 const buttonWidth = windowWidth * 0.75;
 const buttonHeight = windowHeight * 0.07;
-const buttonMarginTop = windowHeight * 0.05;
+const buttonMarginTop = windowHeight * 0.04;
 const screenHeight = Dimensions.get('window').height;
 
 export default function WelcomeScreen() {
@@ -53,7 +53,7 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Image
-        source={require('../assets/images/logo.png')}
+        source={require('../assets/images/logo3.png')}
         style={{ width: logoWidth, height: logoHeight, alignSelf: 'center', marginTop: logoMarginTop }}
       />
 

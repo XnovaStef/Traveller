@@ -20,8 +20,8 @@ export default function ChooseScreen1() {
   return (
     <View style={styles.global}>
       <Image
-        source={require('../assets/images/logo.png')}
-        style={{ width: 200, height: 50, alignSelf: 'center', marginTop: '15%' }}
+        source={require('../assets/images/logo3.png')}
+        style={{ width: 200, height: 150, alignSelf: 'center', marginTop: '20%' }}
       />
       <View>
         <Animatable.View animation="lightSpeedIn" duration={2000} style={button1Style}>

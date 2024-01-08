@@ -5,7 +5,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,  MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function LoginUser() {
   const [value, setValue] = useState("");
@@ -14,6 +14,8 @@ export default function LoginUser() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // État pour contrôler la connexion
+  const [showRatingPopup, setShowRatingPopup] = useState(false); // État pour afficher la pop-up
 
   const navigation = useNavigation(); 
 
@@ -37,6 +39,8 @@ export default function LoginUser() {
     Keyboard.dismiss();
   };
 
+  
+
 
   const handleLogin = () => {
     setLoading(true);
@@ -52,7 +56,8 @@ export default function LoginUser() {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('userId', response.data.userId);
         setLoading(false);
-        navigation.navigate('Reservation');
+        navigation.navigate('history', { tel: tel});
+        
       })
       .catch(error => {
         console.log(error);
@@ -63,6 +68,8 @@ export default function LoginUser() {
         }
       });
   };
+
+  
   
 
 
@@ -70,7 +77,7 @@ export default function LoginUser() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Image style={{  width: 200, height: 40, marginHorizontal: '40%', top: -60 }} source={require('../assets/images/logo.png')} />
+        <Image style={{  width: 200, height: 120, marginHorizontal: '40%', top: '-10%' }} source={require('../assets/images/logo3.png')} />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           enabled
@@ -97,22 +104,24 @@ export default function LoginUser() {
 
 
 
-<TextInput
-  style={styles.TextInput1}
-  underlineColorIos="rgba(0,0,0,0)"
-  placeholder="Mot de passe"
-  value={password}
-  onChangeText={setPassword}
-  secureTextEntry={!showPassword} // Affichage du mot de passe en fonction de l'état showPassword
-  placeholderTextColor="#AAA1A1"
-/>
-
-<TouchableOpacity
-  style={{ position: 'absolute', right: 10, top: '35%' }}
-  onPress={toggleShowPassword}
->
-  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
-</TouchableOpacity>
+<TextInput 
+  
+                    // Set secureTextEntry prop to hide  
+                    //password when showPassword is false 
+                    secureTextEntry={!showPassword} 
+                    value={password} 
+                    onChangeText={setPassword} 
+                    style={styles.TextInput1} 
+                    placeholder="Mot de passe"
+                    placeholderTextColor="#aaa"
+                /> 
+                <MaterialCommunityIcons 
+                    name={showPassword ? 'eye-off' : 'eye'} 
+                    size={24} 
+                    color="#aaa"
+                    style={styles.icon} 
+                    onPress={toggleShowPassword} 
+                /> 
 
           <TouchableOpacity style={styles.forgot} onPress={Forgot}>
             <Text style={{ color: '#F36210', fontSize: 11, fontWeight: '500' }}>Mot de passe oublié</Text>
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
     left: -5,
     width: '80%',
     borderWidth: 1,
-    fontSize: 20,
+    fontSize: 5,
     borderRadius: 4,
     borderColor: '#fff'
   },
@@ -162,12 +171,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     backgroundColor: '#fff',
-    fontSize: 20,
+    fontSize: 15,
     paddingHorizontal: 30,
     borderColor: '#fff'
   },
   forgot: {
-    top: -45,
+    top: -70,
     left: 180,
     fontWeight: 'bold',
   },
@@ -201,5 +210,8 @@ const styles = StyleSheet.create({
     color: '#F36210',
     top: 3,
     fontWeight: 'bold',
-  }
+  },
+  icon: { 
+    marginLeft: '70%', 
+}, 
 });

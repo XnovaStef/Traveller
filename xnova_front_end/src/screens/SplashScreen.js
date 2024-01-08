@@ -46,7 +46,7 @@ const SplashScreen = () => {
       <View style={styles.contentContainer}>
         <Animated.Image
           style={[styles.image, { opacity: fadeAnim }]}
-          source={require('../assets/images/logo.png')}
+          source={require('../assets/images/logo3.png')}
         />
         <Animated.View style={[styles.logoContainer, { marginLeft: moveAnim }]}>
           <Text style={[styles.logoText]}>T</Text>
@@ -72,12 +72,12 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   contentContainer: {
-    top: '40%',
+    top: '30%',
     alignItems: 'center',
   },
   image: {
     width: 200,
-    height: 40,
+    height: 200,
   },
   logoContainer: {
     flexDirection: 'row',

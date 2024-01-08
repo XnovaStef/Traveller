@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, FlatList, SafeAreaView , TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import Navbar from '../components/tab';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
 
 
 export default function HistoryScreen() {
@@ -13,9 +16,23 @@ export default function HistoryScreen() {
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false); 
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const flatListRef = useRef(null);
 
+  const navigation = useNavigation();
 
+  const Home = () =>{
+    navigation.navigate("Reservation")
+  }
+
+  const route = useRoute();
+  const { tel} = route.params; // Récupération du tel de l'utilisateur
+
+
+
+
+  console.log(tel)
 
 
   useEffect(() => {
@@ -23,10 +40,18 @@ export default function HistoryScreen() {
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`
-          );
-          const newData = response.data;
+          const [travelInfo, colisInfo, reservationInfo] = await Promise.all([
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfoTel/${tel}?page=${page}`),
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfoTel/${tel}?page=${page}`),
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfoTel/${tel}?page=${page}`)
+          ]);
+          
+          const newData = [
+            ...travelInfo.data,
+            ...colisInfo.data,
+            ...reservationInfo.data
+          ];
+  
           if (newData.length > 0) {
             setTransactionHistory((prevData) => [...prevData, ...newData]);
             setPage(page + 1);
@@ -39,53 +64,8 @@ export default function HistoryScreen() {
       };
       fetchData();
     }
-  }, [page]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page]);
+  }, [page, tel]);
+  
 
   /*const handleEndReached = () => {
     if (!isLoading) {
@@ -130,17 +110,49 @@ export default function HistoryScreen() {
     return dateB - dateA; // Sort in descending order (most recent first)
   });
 
+  const handleDateChange = (event, selected) => {
+    const currentDate = selected || datePay;
+    setShowDatePicker(false);
+    setSelectedDate(currentDate);
+    setDatePay(currentDate.toISOString().split('T')[0]);
+  };
+
   return (
 
     <View style={styles.global}>
       <StatusBar style='dark' />
-
+      <TouchableOpacity
+        onPress={Home}
+        style={{
+          position: 'absolute',
+          top: 45,
+          left: 20,
+          padding: 10,
+        }}
+      >
+        {/* Utilisation de l'icône de flèche */}
+        <Icon name="home" size={30} color="#246EC3" />
+      </TouchableOpacity>
       <TextInput
         style={styles.searchBar1}
         placeholder="Filtrer par date (YYYY-MM-DD)"
         placeholderTextColor="#000"
         value={datePay}
-        onChangeText={(text) => setDatePay(text)} />
+        onChangeText={(text) => setDatePay(text)}
+      />
+      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        {/* Utilisation d'une icône de calendrier */}
+        <FontAwesome name="calendar" size={24} color="#246EC3" style={styles.calendarIcon} />
+      </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={selectedDate}
+          mode="date"
+          display="calendar"
+          onChange={handleDateChange}
+        />
+      )}
       <TextInput
         style={styles.searchBar}
         placeholder="Filtrer par compagnie"
@@ -159,6 +171,9 @@ export default function HistoryScreen() {
             </Text>
             <Text style={styles.text}>Gare: {item.gare}</Text>
             <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
+            <Text style={styles.text}>Montant: {item.montant}</Text>
+            <Text style={styles.text}>Code: {item.code}</Text>
+            <Text style={styles.text}>Nombre de place: {item.nombre_place}</Text>
           </View>
         )} />
 
@@ -172,7 +187,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     height: 40,
-    width: '90%',
+    width: '60%',
     borderRadius: 15,
     backgroundColor: '#fff',
     color: '#000',
@@ -183,11 +198,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
     top: 30,
-    marginLeft: 20,
+    marginLeft: '20%',
   },
   searchBar1: {
     height: 40,
-    width: '90%',
+    width: '60%',
     borderRadius: 15,
     backgroundColor: '#fff',
     color: '#000',
@@ -198,7 +213,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
     top: 50,
-    marginLeft: 20,
+    marginLeft: '20%',
   },
   transactionItem: {
     backgroundColor: '#246EC3',
@@ -211,5 +226,9 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  calendarIcon: {
+    marginTop: -17,
+left: '85%',
   },
 });

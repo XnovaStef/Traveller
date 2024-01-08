@@ -53,20 +53,31 @@ export default function Pop_Up() {
     Linking.openURL(url);
   };
 
-  const Pay = () => {
-    navigation.navigate("Pay");
-    setIsPopupOpen(false); // Close the popup after navigating
+  const travel = () => {
+    setIsPopupOpen(false); // Ferme le pop-up
+    navigation.goBack(); // Retourne à la page précédente
+    navigation.navigate("Voyages", { companyName, companyDestinations }); // Navigue vers la page "Voyages" avec les données
+    console.log("Navigated to Voyages with:", { companyName, companyDestinations });
   };
-
+  
+  const colis = () => {
+    setIsPopupOpen(false); // Ferme le pop-up
+    navigation.goBack(); // Retourne à la page précédente
+    navigation.navigate("Colis", { companyName, companyDestinations }); // Navigue vers la page "Colis" avec les données
+    console.log("Navigated to Colis with:", { companyName, companyDestinations });
+  };
+  
   const Book = () => {
-    navigation.navigate("Reserv");
-    setIsPopupOpen(false); // Close the popup after navigating
+    setIsPopupOpen(false); // Ferme le pop-up
+    navigation.goBack(); // Retourne à la page précédente
+    navigation.navigate("Reserv", { companyName, companyDestinations }); // Navigue vers la page "Reserv" avec les données
+    console.log("Navigated to Reserv with:", { companyName, companyDestinations });
   };
-
   const renderCompanyDestinations = () => {
     return companyDestinations.map((destination, index) => (
       <View key={index} style={styles.infoContainer}>
         <Text style={styles.text}>Tarif Voyage: {destination.tarifTravel}</Text>
+        <Text style={styles.text}>Tarif Colis: {destination.TarifColis}</Text>
         <Text style={styles.text}>Gare Voyage: {destination.gareTravel}</Text>
         <Text style={styles.text}>Gare Colis: {destination.gareColis}</Text>
        
@@ -99,8 +110,11 @@ export default function Pop_Up() {
           {/* Buttons */}
           {isChecked && (
             <View style={styles.buttonsContainer}>
-              <TouchableOpacity style={styles.button} onPress={Pay}>
-                <Text style={styles.buttonText}>Paiements</Text>
+              <TouchableOpacity style={styles.button} onPress={travel}>
+                <Text style={styles.buttonText}>Voyages</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={colis}>
+                <Text style={styles.buttonText}>Colis</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={Book}>
                 <Text style={styles.buttonText}>Réservation</Text>

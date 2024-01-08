@@ -50,6 +50,7 @@ const services = [
     { label: "Location", image: require('../assets/images/Location.jpg'), action: () => navigation.navigate("Location")  },
     { label: "Colis", image: require('../assets/images/pay.jpg'), action: () =>Alert.alert('Service non disponible')  },
     { label: "VTC", image: require('../assets/images/VTC.jpg'), action: () => navigation.navigate("Cocar")  },
+    { label: "Avis", image: require('../assets/images/rating.jpg'), action: () => navigation.navigate("Rating")  },
 
     
   ];
@@ -70,49 +71,13 @@ const services = [
     <StatusBar style='light' />
 
     <View style={styles.header}>
-          <View style={styles.elements}>
-            <FontAwesome name="bell" size={20} color="white" style={{marginRight: 10}} />
-            <View style={styles.country}>
-              <CountryPicker 
-                withFilter
-                countryCode={countryCode}
-                withFlag
-                withCountryNameButton
-                withAlphaFilter={false}
-                withCurrencyButton={false}
-                withCallingCode
-                withEmoji
-                onSelect={
-                  country => {
-                    console.log('country', country);
-                    const {cca2, callingCode} = country;
-                    setCountryCode(cca2);
-                    setcallingCode(callingCode[0]);
-                  }
-                }
-                containerButtonStyle={{
-                  alignItems: 'flex-end',
-                  marginLeft: 10,
-                }}
-                theme={{
-                  onBackgroundTextColor: '#ffffff',
-                  backgroundColor: '#246EC3',
-                  fontSize: 14            
-                }}
-              />
-            </View>
-          </View>
+          
         </View>
         <View style={styles.search}>
           <Text style={{color: 'white', fontSize: 18, marginBottom: 10, fontWeight: 'bold', fontStyle: 'italic'}}>Bienvenue {pseudo} sur TRAVELLER</Text>
           <Text style={{color: 'white', fontSize: 23, fontWeight:'bold'}}>Services</Text>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Recherche services..."
-            placeholderTextColor="#ffffff"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+          
+          
         </View>
 
         <ScrollView style={styles.scrollView}>
@@ -144,9 +109,7 @@ const styles = StyleSheet.create({
 
     },
     header: {
-      height: '15%',
-      width: '100%',
-      backgroundColor: '#000'
+
     },
     elements : {
       display: 'flex',

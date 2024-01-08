@@ -29,76 +29,40 @@ export default function HistoryScreen() {
   };
 
   const route = useRoute();
-  const { tel } = route.params; // Récupération du nom de la compagnie
+  const { tel, code } = route.params; // Récupération du nom de la compagnie
 
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyTravelInfoTel/${tel}?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page, tel]);
+// Utilisation de la nouvelle route
+useEffect(() => {
+  if (!isLoading) {
+    setIsLoading(true);
+    const fetchData = async () => {
+      try {
+        const [travelResponse, colisResponse, reservationResponse] = await Promise.all([
+          axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfoTelCode/${tel}/${code}?page=${page}`),
+          axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfoTelCode/${tel}/${code}?page=${page}`),
+          axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfoTelCode/${tel}/${code}?page=${page}`)
+        ]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyColisInfoTel/${tel}?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page, tel]);
+        const travelData = travelResponse.data;
+        const colisData = colisResponse.data;
+        const reservationData = reservationResponse.data;
 
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyReservationInfoTel/${tel}?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
+        const newData = [...travelData, ...colisData, ...reservationData];
+        
+        if (newData.length > 0) {
+          setTransactionHistory((prevData) => [...prevData, ...newData]);
+          setPage(page + 1);
         }
-      };
-      fetchData();
-    }
-  }, [page, tel]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }
+}, [page, tel, code]);
+
 
   const filteredTransactionHistory = transactionHistory.filter((item) => {
     const isDateMatched = !datePay || item.datePay.includes(datePay);
@@ -106,47 +70,57 @@ export default function HistoryScreen() {
     return isDateMatched && isNatureMatched;
   });
 
+  // Trier les transactions par date de paiement, du plus récent au moins récent
+  const sortedTransactionHistory = filteredTransactionHistory.sort((a, b) => {
+    const dateA = new Date(a.datePay);
+    const dateB = new Date(b.datePay);
+    return dateB - dateA;
+  });
+
   return (
     <View style={styles.global}>
-      <StatusBar style='dark' />
-      <TextInput
-        style={styles.searchBar1}
-        placeholder="Filtrer par date (YYYY-MM-DD)"
-        placeholderTextColor="#000"
-        value={datePay}
-        onChangeText={(text) => setDatePay(text)}
+    <StatusBar style='dark' />
+    <TextInput
+      style={styles.searchBar1}
+      placeholder="Filtrer par date (YYYY-MM-DD)"
+      placeholderTextColor="#000"
+      value={datePay}
+      onChangeText={(text) => setDatePay(text)}
+    />
+    <TextInput
+      style={styles.searchBar}
+      placeholder="Filtrer par nature"
+      placeholderTextColor="#000"
+      value={nature}
+      onChangeText={(text) => setNature(text)}
+    />
+    <Animatable.View animation="bounceIn" duration={1000} style={styles.bouncingView}>
+      <FlatList
+        ref={flatListRef}
+        data={sortedTransactionHistory}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedItem(item);
+              setModalVisible(true);
+            }}
+          >
+            <View style={styles.transactionItem}>
+              <Text style={styles.text}>Nature: ticket {item.nature}</Text>
+              <Text style={styles.text}>
+                Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
+              </Text>
+              <Text style={styles.text}>Heure: {item.timePay}</Text>
+              <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
+              <Text style={styles.text}>code: {item.code}</Text>
+              <Text style={styles.text}>nombre de place: {item.nombre_place}</Text>
+              <Text style={styles.text}>Montant: {item.montant}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       />
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Filtrer par nature"
-        placeholderTextColor="#000"
-        value={nature}
-        onChangeText={(text) => setNature(text)}
-      />
-      <Animatable.View animation="bounceIn" duration={1000} style={styles.bouncingView}>
-        <FlatList
-          ref={flatListRef}
-          data={filteredTransactionHistory}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedItem(item);
-                setModalVisible(true);
-              }}
-            >
-              <View style={styles.transactionItem}>
-                <Text style={styles.text}>Nature: ticket {item.nature}</Text>
-                <Text style={styles.text}>
-                  Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString() : 'N/A'}
-                </Text>
-                <Text style={styles.text}>Heure: {item.timePay}</Text>
-                <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      </Animatable.View>
+    </Animatable.View>
 
       <Modal
         animationType="slide"

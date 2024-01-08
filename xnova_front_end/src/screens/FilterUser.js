@@ -105,7 +105,7 @@ export default function FilterScreen() {
           tarifTravel: transaction.tarifTravel,
           gareTravel: transaction.gareTravel,
           destinationColis: transaction.destinationColis,
-          tarifColis: transaction.tarifColis,
+          TarifColis: transaction.TarifColis,
           gareColis: transaction.gareColis,
           depart: transaction.depart
         };

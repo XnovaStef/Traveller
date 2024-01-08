@@ -29,8 +29,8 @@ export default function ChooseScreen() {
   return (
     <View style={styles.global}>
       <Image
-        source={require('../assets/images/logo.png')}
-        style={{ width: 200, height: 50, alignSelf: 'center', marginTop: '15%' }}
+        source={require('../assets/images/logo3.png')}
+        style={{ width: 200, height: 150, alignSelf: 'center', marginTop: '30%' }}
       />
       <View>
         <Animatable.View

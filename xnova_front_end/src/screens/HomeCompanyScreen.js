@@ -25,10 +25,18 @@ export default function HomeCompanyScreen() {
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`
-          );
-          const newData = response.data;
+          const [travelInfo, colisInfo, reservationInfo] = await Promise.all([
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`),
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`),
+            axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`)
+          ]);
+          
+          const newData = [
+            ...travelInfo.data,
+            ...colisInfo.data,
+            ...reservationInfo.data
+          ];
+  
           if (newData.length > 0) {
             setTransactionHistory((prevData) => [...prevData, ...newData]);
             setPage(page + 1);
@@ -42,52 +50,7 @@ export default function HomeCompanyScreen() {
       fetchData();
     }
   }, [page]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`
-          );
-          const newData = response.data;
-          if (newData.length > 0) {
-            setTransactionHistory((prevData) => [...prevData, ...newData]);
-            setPage(page + 1);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [page]);
+  
 
 /*
   const convertDateFormat = (inputDate) => {

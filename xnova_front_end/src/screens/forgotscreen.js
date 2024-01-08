@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image, Alert } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,7 +54,19 @@ export default function ForgotScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Image style={{ width: 200, height: 40, marginHorizontal: '40%', marginTop: 70 }} source={require('../assets/images/logo.png')} />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{
+          position: 'absolute',
+          top: 30,
+          left: 20,
+          padding: 10,
+        }}
+      >
+        {/* Utilisation de l'icône de flèche */}
+        <Icon name="arrow-back" size={30} color="#000" />
+      </TouchableOpacity>
+        <Image style={{ width: 150, height: 80, marginHorizontal: '40%', marginTop: 70 }} source={require('../assets/images/logo3.png')} />
 
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enabled>
           <PhoneInput
