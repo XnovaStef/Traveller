@@ -14,8 +14,9 @@ import {
 } from 'react-native';
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Contacts from 'react-native-contacts';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -25,29 +26,89 @@ export default function ColisScreen() {
   const [textInput3, setTextInput3] = useState('');
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
+  const [tel, setTel] = useState('')
+  const [destinataire, setDestinataire] = useState('')
 
   const navigation = useNavigation();
 
-  const handlePayButtonPress = () => {
-    setPaymentCompleted(true);
-    setShowTicket(true);
-    Alert.alert('Payment');
+  const route = useRoute();
+  const { companyName, companyDestinations } = route.params || {};
+  const firstDestination = companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null;
+
+  const [selectedDestination, setSelectedDestination] = useState(firstDestination ? firstDestination.destinationTravel : null);
+  const [selectedStation, setSelectedStation] = useState(firstDestination ? firstDestination.gareTravel : null);
+  const [gareColis, setGareColis] = useState (firstDestination ? firstDestination.gareColis : null)
+  const defaultTarifTravel = firstDestination ? firstDestination.tarifTravel ?? '' : '';
+
+  const [tarifTravel, setTarifTravel] = useState(defaultTarifTravel);
+
+  const defaultTarifColis = firstDestination ? firstDestination.TarifColis ?? '' : '';
+
+  const [TarifColis, setTarifColis] = useState(defaultTarifColis);
+
+  const reservationData = {
+    tel: tel,
+    compagnie: companyName,
+    destination: selectedDestination,
+    gare: gareColis,
+    montant: textInput2,
+    valeur_colis: textInput1,
+    tel_destinataire: destinataire
   };
+
+
+  const handlePayButtonPress = async () => {
+    try {
+      const response = await axios.post('https://xnova-back-end.onrender.com/api/user/Colis', reservationData);
+      console.log('Code de réservation:', response.data.code);
+      Alert.alert('Votre code de paiement est:', `Code: ${response.data.code}`);
+      setShowTicket(true);
+    } catch (error) {
+      console.error('Error:', error.message); // Log the detailed error message
+      if (error.response) {
+        console.error('Erreur de requête :', error.response.data);
+        Alert.alert('Paiement non effectuée. Veuillez vérifier le numéro de téléphone.');
+      } else {
+        console.error('Erreur lors de la requête :', error.message);
+        Alert.alert('Réservation non effectuée. Veuillez réessayer plus tard.');
+      }
+    }
+  };
+  
 
   const handleShowTicketPress = () => {
     navigation.navigate('Pass');
   };
 
   const handleTextInput1Change = (value) => {
-    setTextInput1(value);
-    const newValue = parseFloat(value) + 500;
-    setTextInput2(newValue.toFixed(2));
+    const intValue = parseInt(value, 10);
+    setTextInput1(intValue.toString()); // Set the input as a string to display in the TextInput
+    const newValue = intValue * TarifColis; // Ensure both values are integers
+    setTextInput2(newValue.toString());
+  };
+  
+  const handleTextInput2Change = (value) => {
+    const intValue = parseInt(value, 10);
+    setTextInput2(intValue.toString()); // Set the input as a string to display in the TextInput
+    const newValue = intValue * TarifColis; // Ensure both values are integers
+    setTextInput1(newValue.toString());
+  };
+  
+
+  const setNumeroWithCountryCode = (text) => {
+    if (text.startsWith('+225')) {
+      setTel(text);
+    } else {
+      setTel('+225' + text);
+    }
   };
 
-  const handleTextInput2Change = (value) => {
-    setTextInput2(value);
-    const newValue = parseFloat(value) - 500;
-    setTextInput1(newValue.toFixed(2));
+  const setNumeroWithCountryDesti = (text) => {
+    if (text.startsWith('+225')) {
+      setDestinataire(text);
+    } else {
+      setDestinataire('+225' + text);
+    }
   };
 
   return (
@@ -85,8 +146,15 @@ export default function ColisScreen() {
           <TextInput
             style={styles.input}
             placeholder="Numéro destinataire"
-            value={textInput3}
-            onChangeText={setTextInput3}
+            value={destinataire}
+            onChangeText={setNumeroWithCountryDesti}
+            keyboardType="phone-pad"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Numéro"
+            value={tel}
+            onChangeText={setNumeroWithCountryCode}
             keyboardType="phone-pad"
           />
 

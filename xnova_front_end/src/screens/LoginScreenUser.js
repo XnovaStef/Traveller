@@ -77,7 +77,7 @@ export default function LoginUser() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Image style={{  width: 200, height: 120, marginHorizontal: '40%', top: '-10%' }} source={require('../assets/images/logo3.png')} />
+        <Image style={{  width: 200, height: 120, marginHorizontal: '40%', top: '-10%' }} source={require('../assets/images/logo4.png')} />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           enabled

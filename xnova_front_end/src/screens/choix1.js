@@ -20,7 +20,7 @@ export default function ChooseScreen1() {
   return (
     <View style={styles.global}>
       <Image
-        source={require('../assets/images/logo3.png')}
+        source={require('../assets/images/logo4.png')}
         style={{ width: 200, height: 150, alignSelf: 'center', marginTop: '20%' }}
       />
       <View>

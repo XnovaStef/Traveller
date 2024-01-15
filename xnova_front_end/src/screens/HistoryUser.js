@@ -159,6 +159,9 @@ export default function HistoryScreen() {
         placeholderTextColor="#000"
         value={searchCompany}
         onChangeText={(text) => setSearchCompany(text)} />
+      {transactionHistory.length === 0 ? (
+      <Text style={styles.text1}>Pas de transaction pour l'instant</Text>
+    ) : (
       <FlatList
         ref={flatListRef}
         data={sortedTransactionHistory}
@@ -176,6 +179,7 @@ export default function HistoryScreen() {
             <Text style={styles.text}>Nombre de place: {item.nombre_place}</Text>
           </View>
         )} />
+    )}
 
     </View>
   );
@@ -226,6 +230,14 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+
+  text1: {
+    color: '#fff',
+    fontWeight: 'bold',
+    color:'#000',
+    textAlign:'center',
+    fontSize:20
   },
   calendarIcon: {
     marginTop: -17,

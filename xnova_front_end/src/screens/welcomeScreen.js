@@ -53,7 +53,7 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Image
-        source={require('../assets/images/logo3.png')}
+        source={require('../assets/images/logo4.png')}
         style={{ width: logoWidth, height: logoHeight, alignSelf: 'center', marginTop: logoMarginTop }}
       />
 

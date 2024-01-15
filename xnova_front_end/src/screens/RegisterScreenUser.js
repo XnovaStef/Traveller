@@ -28,6 +28,7 @@ export default function RegisterUser() {
   const [password, setPassword] = useState('');
   const [value, setValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword]= useState('');
   const phoneInput = useRef<PhoneInput>(null);
 
   const navigation = useNavigation();
@@ -45,6 +46,12 @@ const Login = () =>{
   };
 
   const handleRegistration = async () => {
+    // Vérifier si les mots de passe correspondent
+    if (password !== confirmPassword) {
+      Alert.alert("Mot de passe non conforme", "Les mots de passe ne correspondent pas.");
+      return;
+    }
+  
     setIsLoading(true);
   
     const data = {
@@ -72,6 +79,7 @@ const Login = () =>{
         setIsLoading(false);
       });
   };
+  
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -79,7 +87,7 @@ const Login = () =>{
         <View style={styles.container}>
           <Image
             style={{ width: windowWidth * 0.3, height: windowHeight * 0.1, marginTop: windowHeight * 0.05 }}
-            source={require('../assets/images/logo3.png')}
+            source={require('../assets/images/logo4.png')}
           />
           <TextInput
             style={styles.TextInput}
@@ -130,6 +138,15 @@ const Login = () =>{
             placeholder="Mot de passe"
             value={password}
             onChangeText={setPassword}
+            secureTextEntry={true}
+            placeholderTextColor="#AAA1A1"
+          />
+          <TextInput
+            style={styles.TextInput}
+            underlineColorAndroid="transparent"
+            placeholder="confirmation mot de passe"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
             secureTextEntry={true}
             placeholderTextColor="#AAA1A1"
           />

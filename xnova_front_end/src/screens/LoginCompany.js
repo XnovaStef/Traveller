@@ -74,7 +74,7 @@ export default function RegisterScreenCompany1() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Image style={styles.logo} source={require('../assets/images/logo3.png')} />
+        <Image style={styles.logo} source={require('../assets/images/logo4.png')} />
         <TextInput
           style={styles.input}
           value={email}
