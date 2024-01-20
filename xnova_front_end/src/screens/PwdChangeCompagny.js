@@ -28,7 +28,7 @@ export default function PwdCompagny() {
     .then(token => {
         AsyncStorage.getItem('companyId')
         .then(companyId => {
-            axios.put(`https://xnova-back-end.onrender.com/api/company/companies/${companyId}/updateCompanyPwd`, {
+            axios.put(`https://xnova-back-end-dgb2.onrender.com/api/company/companies/${companyId}/updateCompanyPwd`, {
               currentPassword: currentPassword,
               newPassword: newPassword
             }, {

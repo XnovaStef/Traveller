@@ -26,9 +26,9 @@ export default function HomeCompanyScreen() {
       const fetchData = async () => {
         try {
           const [travelInfo, colisInfo, reservationInfo] = await Promise.all([
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfo?page=${page}`),
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfo?page=${page}`),
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfo?page=${page}`)
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyTravelInfo?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyColisInfo?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyReservationInfo?page=${page}`)
           ]);
           
           const newData = [

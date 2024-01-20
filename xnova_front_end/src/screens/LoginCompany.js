@@ -52,7 +52,7 @@ export default function RegisterScreenCompany1() {
     };
 
     axios
-      .post('https://xnova-back-end.onrender.com/api/company/login', data) // Replace with your API endpoint
+      .post('https://xnova-back-end-dgb2.onrender.com/api/company/login', data) // Replace with your API endpoint
       .then((response) => {
         // Assuming your API returns a valid token and companyId
         AsyncStorage.setItem('token', response.data.accessToken);

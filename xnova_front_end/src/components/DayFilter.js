@@ -15,7 +15,7 @@ export default function StatsDashboard() {
 
   const fetchStats = async (endpoint) => {
     try {
-      const apiUrl = 'https://xnova-back-end.onrender.com/api/user/';
+      const apiUrl = 'https://xnova-back-end-dgb2.onrender.com/api/user/';
       const response = await axios.get(apiUrl + endpoint);
       const stats = response.data;
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -10,23 +10,69 @@ export default function Filter() {
   const [showModal, setShowModal] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState(null);
 
+  const [companyName, setCompanyName] = useState('');
+  const [companyDestinations, setCompanyDestinations] = useState([]);
+
   const navigation = useNavigation();
   const route = useRoute();
-  const { companyName, companyDestinations } = route.params;
 
-  const handleOptionPress = (destination) => {
-    setSelectedDestination(destination);
-    setShowModal(true);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (route && route.params) {
+        const { companyName, companyDestinations,  } = route.params;
+  
+        // Update states with routed information
+        setCompanyName(companyName);
+        setCompanyDestinations(companyDestinations);
+  
+        // Wait for the data to be loaded
+        await new Promise(resolve => setTimeout(resolve, 0));
+  
+        // Extract and display tarifTravel
+        companyDestinations.forEach((destination) => {
+          destination.destinationTravel.forEach((dest) => {
+            const tarif = dest.Travel !== undefined ? dest.Travel : 'N/A';
+            const tarifColis = dest.Colis !== undefined ? dest.Colisww : 'N/A';
+            console.log(`Tarif for ${dest.destination}: ${tarif}`);
+            console.log(`TarifColis for ${dest.destination}: ${tarifColis}`);
+          });
+        });
+      }
+    };
+  
+    fetchData();
+  }, [route]);
+  
+
+  // Add these logs to help debug
+console.log('companyDestinations:', companyDestinations);
+console.log('filteredDestinations:', filteredDestinations);
+
+
+
+const handleOptionPress = (destination) => {
+  console.log('Selected destination:', destination);
+  setSelectedDestination(destination);
+  setShowModal(true);
+};
+
+
 
   const closeModal = () => {
     setShowModal(false);
   };
 
-  const filteredTransactionHistory = companyDestinations.filter((item) => {
-    const isDestinationMatched = !destinationFilter || item.toLowerCase().includes(destinationFilter.toLowerCase());
+  const filteredDestinations = companyDestinations.flatMap((item) =>
+  item.destinationTravel.filter((destination) => {
+    const destinationText = destination?.destination || '';
+    const isDestinationMatched = !destinationFilter || destinationText.toLowerCase().includes(destinationFilter.toLowerCase());
     return isDestinationMatched;
-  });
+  })
+);
+
+  
+  
+  
 
   return (
     <View style={styles.global}>
@@ -53,16 +99,17 @@ export default function Filter() {
         onChangeText={(text) => setDestinationFilter(text)}
       />
       <FlatList
-        data={filteredTransactionHistory}
+        data={filteredDestinations}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleOptionPress(item)}>
             <View style={styles.transactionItem}>
-              <Text style={styles.text}>{item.destinationTravel}</Text>
+              <Text style={styles.text}>{item.destination}</Text>
             </View>
           </TouchableOpacity>
         )}
       />
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -71,12 +118,16 @@ export default function Filter() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            {selectedDestination && (
-              <><Pop_Up
-              destination={selectedDestination}
-              onClose={() => setShowModal(false)} /><TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
-                <Ionicons name="close" size={24} color="black" />
-              </TouchableOpacity></>
+          {selectedDestination && (
+              <>
+                <Pop_Up
+                  selectedDestination={selectedDestination}
+                  onClose={() => setShowModal(false)}
+                />
+                <TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
+                  <Ionicons name="close" size={24} color="black" />
+                </TouchableOpacity>
+              </>
             )}
           </View>
         </View>

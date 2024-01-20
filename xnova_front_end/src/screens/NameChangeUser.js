@@ -24,7 +24,7 @@ export default function NameScreen() {
           .then((userId) => {
             axios
               .put(
-                `https://xnova-back-end.onrender.com/api/user/users/${userId}/updateName`,
+                `https://xnova-back-end-dgb2.onrender.com/api/user/users/${userId}/updateName`,
                 {
                   pseudo: pseudo,
                   password: password,

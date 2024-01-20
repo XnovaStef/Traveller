@@ -32,7 +32,7 @@ export default function PwdScreen() {
       .then(token => {
         AsyncStorage.getItem('userId')
           .then(userId => {
-            axios.put(`https://xnova-back-end.onrender.com/api/user/users/${userId}/updatePassword`, {
+            axios.put(`https://xnova-back-end-dgb2.onrender.com/api/user/users/${userId}/updatePassword`, {
               currentPassword: currentPassword,
               newPassword: newPassword
             }, {

@@ -38,9 +38,9 @@ useEffect(() => {
     const fetchData = async () => {
       try {
         const [travelResponse, colisResponse, reservationResponse] = await Promise.all([
-          axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfoTelCode/${tel}/${code}?page=${page}`),
-          axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfoTelCode/${tel}/${code}?page=${page}`),
-          axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfoTelCode/${tel}/${code}?page=${page}`)
+          axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyTravelInfoTelCode/${tel}/${code}?page=${page}`),
+          axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyColisInfoTelCode/${tel}/${code}?page=${page}`),
+          axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyReservationInfoTelCode/${tel}/${code}?page=${page}`)
         ]);
 
         const travelData = travelResponse.data;

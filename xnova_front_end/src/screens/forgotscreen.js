@@ -29,7 +29,7 @@ export default function ForgotScreen() {
     };
   
     axios
-      .post('https://xnova-back-end.onrender.com/api/user/users/forgot', data)
+      .post('https://xnova-back-end-dgb2.onrender.com/api/user/users/forgot', data)
       .then((response) => {
         // Set isLoading to false when registration is successful
         setLoading(false);

@@ -29,37 +29,41 @@ export default function ColisScreen() {
   const [tel, setTel] = useState('')
   const [destinataire, setDestinataire] = useState('')
 
+
   const navigation = useNavigation();
 
   const route = useRoute();
-  const { companyName, companyDestinations } = route.params || {};
-  const firstDestination = companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null;
+  const { companyName, companyDestinations, selectedDestination } = route.params || {};
+  const firstDestination = selectedDestination || (companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null);
 
-  const [selectedDestination, setSelectedDestination] = useState(firstDestination ? firstDestination.destinationTravel : null);
-  const [selectedStation, setSelectedStation] = useState(firstDestination ? firstDestination.gareTravel : null);
-  const [gareColis, setGareColis] = useState (firstDestination ? firstDestination.gareColis : null)
-  const defaultTarifTravel = firstDestination ? firstDestination.tarifTravel ?? '' : '';
+  useEffect(() => {
+    // Logique pour récupérer le tarif de la destination sélectionnée
+    const tarifColisValue = selectedDestination?.tarifColis || (firstDestination ? firstDestination.tarifColis : '');
+  
+    // Mettez à jour l'état tarifColis avec la valeur récupérée
+    setTarifColis(tarifColisValue);
+  }, [selectedDestination, firstDestination]);
+  
 
-  const [tarifTravel, setTarifTravel] = useState(defaultTarifTravel);
-
-  const defaultTarifColis = firstDestination ? firstDestination.TarifColis ?? '' : '';
-
-  const [TarifColis, setTarifColis] = useState(defaultTarifColis);
+  const [tarifColis, setTarifColis] = useState('');
 
   const reservationData = {
     tel: tel,
     compagnie: companyName,
-    destination: selectedDestination,
-    gare: gareColis,
+    destination: selectedDestination?.destination || firstDestination?.destination || '',
+    gare: selectedDestination?.gare || firstDestination?.gare || '',
     montant: textInput2,
     valeur_colis: textInput1,
     tel_destinataire: destinataire
   };
 
+  console.log("reservation:", reservationData)
+  console.log("colis:", tarifColis)
+
 
   const handlePayButtonPress = async () => {
     try {
-      const response = await axios.post('https://xnova-back-end.onrender.com/api/user/Colis', reservationData);
+      const response = await axios.post('https://xnova-back-end-dgb2.onrender.com/api/user/Colis', reservationData);
       console.log('Code de réservation:', response.data.code);
       Alert.alert('Votre code de paiement est:', `Code: ${response.data.code}`);
       setShowTicket(true);
@@ -83,14 +87,14 @@ export default function ColisScreen() {
   const handleTextInput1Change = (value) => {
     const intValue = parseInt(value, 10);
     setTextInput1(intValue.toString()); // Set the input as a string to display in the TextInput
-    const newValue = intValue * TarifColis; // Ensure both values are integers
+    const newValue = intValue * tarifColis; // Ensure both values are integers
     setTextInput2(newValue.toString());
   };
   
   const handleTextInput2Change = (value) => {
     const intValue = parseInt(value, 10);
     setTextInput2(intValue.toString()); // Set the input as a string to display in the TextInput
-    const newValue = intValue * TarifColis; // Ensure both values are integers
+    const newValue = intValue * tarifColis; // Ensure both values are integers
     setTextInput1(newValue.toString());
   };
   

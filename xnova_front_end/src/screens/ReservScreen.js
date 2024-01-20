@@ -16,25 +16,23 @@ export default function ReservScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { companyName, companyDestinations } = route.params || {};
+  const { companyName, companyDestinations, selectedDestination } = route.params || {};
+  const firstDestination = selectedDestination || (companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null);
 
-  const firstDestination = companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null;
-
-  const [selectedDestination, setSelectedDestination] = useState(firstDestination ? firstDestination.destinationTravel : null);
-  const [selectedStation, setSelectedStation] = useState(firstDestination ? firstDestination.gareTravel : null);
+  const [tarifTravel, setTarifTravel] = useState(firstDestination ? firstDestination.tarifTravel ?? '' : '');
 
   const reservationData = {
     tel: tel,
     nombre_place: parseInt(selectedPlaces),
     heure_depart: selectedTime || '',
     compagnie: companyName,
-    destination: selectedDestination,
-    gare: selectedStation,
+    destination: selectedDestination?.destination || firstDestination?.destination || '', // Ensure a value is provided
+    gare: selectedDestination?.gare || firstDestination?.gare || '', // Ensure a value is provided
   };
 
   const Reservation = async () => {
     try {
-      const response = await axios.post('https://xnova-back-end.onrender.com/api/user/Reservation', reservationData);
+      const response = await axios.post('https://xnova-back-end-dgb2.onrender.com/api/user/Reservation', reservationData);
       console.log('Code de réservation:', response.data.code);
       Alert.alert('Votre code de réservation est:', `Code: ${response.data.code}\nVous êtes prié de vous rendre à la gare pour le paiement avant la date du : ${response.data.codeExpiration}`);
   

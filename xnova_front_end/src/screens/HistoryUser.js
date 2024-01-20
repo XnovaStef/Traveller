@@ -41,9 +41,9 @@ export default function HistoryScreen() {
       const fetchData = async () => {
         try {
           const [travelInfo, colisInfo, reservationInfo] = await Promise.all([
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyTravelInfoTel/${tel}?page=${page}`),
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyColisInfoTel/${tel}?page=${page}`),
-            axios.get(`https://xnova-back-end.onrender.com/api/user/everyReservationInfoTel/${tel}?page=${page}`)
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyTravelInfoTel/${tel}?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyColisInfoTel/${tel}?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyReservationInfoTel/${tel}?page=${page}`)
           ]);
           
           const newData = [

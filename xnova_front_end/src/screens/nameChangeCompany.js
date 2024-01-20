@@ -32,7 +32,7 @@ export default function CompagnyScreen() {
     .then(token => {
         AsyncStorage.getItem('companyId')
         .then(companyId => {
-            axios.put(`https://xnova-back-end.onrender.com/api/company/companies/${companyId}/updateCompany`, {
+            axios.put(`https://xnova-back-end-dgb2.onrender.com/api/company/companies/${companyId}/updateCompany`, {
             compagnie: compagnie,
             password: password
             }, {

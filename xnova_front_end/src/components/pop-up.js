@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Linking } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function Pop_Up() {
+export default function Pop_Up({ selectedDestination, onClose }) {
   const [isChecked, setIsChecked] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(true); // State for controlling the popup
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +19,8 @@ export default function Pop_Up() {
 
   const route = useRoute();
   const { companyName, companyDestinations } = route.params; // Récupération du nom de la compagnie
+
+  console.log("travel:",selectedDestination.tarif)
 
 
 
@@ -56,41 +58,53 @@ export default function Pop_Up() {
   const travel = () => {
     setIsPopupOpen(false); // Ferme le pop-up
     navigation.goBack(); // Retourne à la page précédente
-    navigation.navigate("Voyages", { companyName, companyDestinations }); // Navigue vers la page "Voyages" avec les données
-    console.log("Navigated to Voyages with:", { companyName, companyDestinations });
+    navigation.navigate("Voyages", { companyName, companyDestinations, selectedDestination }); // Navigue vers la page "Voyages" avec les données
+    console.log("Navigated to Voyages with:", { companyName, companyDestinations, selectedDestination });
   };
   
   const colis = () => {
     setIsPopupOpen(false); // Ferme le pop-up
     navigation.goBack(); // Retourne à la page précédente
-    navigation.navigate("Colis", { companyName, companyDestinations }); // Navigue vers la page "Colis" avec les données
-    console.log("Navigated to Colis with:", { companyName, companyDestinations });
+    navigation.navigate("Colis", { companyName, companyDestinations, selectedDestination }); // Navigue vers la page "Colis" avec les données
+    console.log("Navigated to Colis with:", { companyName, companyDestinations, selectedDestination });
+   
   };
   
   const Book = () => {
     setIsPopupOpen(false); // Ferme le pop-up
     navigation.goBack(); // Retourne à la page précédente
-    navigation.navigate("Reserv", { companyName, companyDestinations }); // Navigue vers la page "Reserv" avec les données
-    console.log("Navigated to Reserv with:", { companyName, companyDestinations });
+    navigation.navigate("Reserv", { companyName, companyDestinations, selectedDestination }); // Navigue vers la page "Reserv" avec les données
+    console.log("Navigated to Reserv with:", { companyName, companyDestinations, selectedDestination });
   };
-  const renderCompanyDestinations = () => {
-    return companyDestinations.map((destination, index) => (
-      <View key={index} style={styles.infoContainer}>
-        <Text style={styles.text}>Tarif Voyage: {destination.tarifTravel}</Text>
-        <Text style={styles.text}>Tarif Colis: {destination.TarifColis}</Text>
-        <Text style={styles.text}>Gare Voyage: {destination.gareTravel}</Text>
-        <Text style={styles.text}>Gare Colis: {destination.gareColis}</Text>
-       
-      </View>
-    ));
+  const renderSelectedDestination = () => {
+    if (selectedDestination) {
+      const { destination, tarif, gare } = selectedDestination;
+      return (
+        <View style={styles.infoContainer}>
+          <Text>{`Destination: ${destination || 'N/A'}`}</Text>
+          <Text>{`Tarif Travel: ${tarif !== undefined ? tarif : 'N/A'}`}</Text>
+          <Text>{`Gare: ${gare || 'N/A'}`}</Text>
+        </View>
+      );
+    } else {
+      return null;
+    }
   };
+  
+  
+  
+  
+  
+  
+  
+
 
   return (
     <View style={styles.global}>
       {isPopupOpen && ( // Render the popup only if isPopupOpen is true
         <View style={styles.popupContainer}>
           <View style={styles.infoContainer}>
-          {renderCompanyDestinations()}
+          {renderSelectedDestination()}
           </View>
 
           {/* Button to open Google Maps */}

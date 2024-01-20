@@ -71,12 +71,16 @@ export default function FilterScreen() {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://xnova-back-end.onrender.com/api/user/getDestinationTravel?page=${page}`
+            `http://192.168.1.7:3005/api/user/getDestinationTravel?page=${page}`
           );
           const newData = response.data;
-          if (newData.length > 0) {
+  
+          // Ensure that newData is an array and has the expected structure
+          if (Array.isArray(newData)) {
             setTransactionHistory((prevData) => [...prevData, ...newData]);
             setPage(page + 1);
+          } else {
+            console.error('Invalid data structure:', newData);
           }
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -87,6 +91,7 @@ export default function FilterScreen() {
       fetchData();
     }
   }, [page]);
+  
 
   /*const handleEndReached = () => {
     if (!isLoading) {
@@ -97,37 +102,43 @@ export default function FilterScreen() {
 
   const handleItemPress = (item) => {
     const selectedCompany = item.compagnie;
-    const destinationsOfSelectedCompany = transactionHistory
+    
+    // Filter transactions for the selected company
+    const transactionsOfSelectedCompany = transactionHistory
       .filter((transaction) => transaction.compagnie === selectedCompany)
       .map((transaction) => {
         return {
-          destinationTravel: transaction.destinationTravel,
-          tarifTravel: transaction.tarifTravel,
-          gareTravel: transaction.gareTravel,
-          destinationColis: transaction.destinationColis,
-          TarifColis: transaction.TarifColis,
-          gareColis: transaction.gareColis,
-          depart: transaction.depart
+          destinationTravel: transaction.destinationTravel.map((dest) => ({
+            destination: dest.destination,
+            tarif: dest.Travel,
+            tarifColis:dest.Colis,
+            gare: dest.gare,
+          })),
+          depart: transaction.depart,
         };
       });
-
-      console.log("Destinations de cette compagnie :", destinationsOfSelectedCompany)
+    
+    // Now, transactionsOfSelectedCompany contains an array of transactions for the selected company
+    console.log(transactionsOfSelectedCompany);
   
     navigation.navigate("Filter", {
       companyName: selectedCompany,
-      companyDestinations: destinationsOfSelectedCompany,
-
-      
+      companyDestinations: transactionsOfSelectedCompany,
     });
   };
+  
   
 
   const filteredTransactionHistory = transactionHistory.filter((item) => {
     const isDateMatched = !datePay || item.datePay.includes(datePay);
     const isCompanyMatched = !searchCompany || item.compagnie.toLowerCase().includes(searchCompany.toLowerCase());
-    const isDestinationMatched = !destinationFilter || item.destinationTravel.toLowerCase().includes(destinationFilter.toLowerCase());
+    
+    // Check if any destination in the destinationTravel array matches the destinationFilter
+    const isDestinationMatched = !destinationFilter || item.destinationTravel.some(dest => dest.destination.toLowerCase().includes(destinationFilter.toLowerCase()));
+  
     return isDateMatched && isCompanyMatched && isDestinationMatched;
   });
+  
   
   
 
@@ -155,24 +166,27 @@ export default function FilterScreen() {
   onChangeText={(text) => setDestinationFilter(text)}
 />
 
-     <FlatList
+<FlatList
   ref={flatListRef}
   data={filteredTransactionHistory}
   keyExtractor={(item, index) => index.toString()}
   renderItem={({ item }) => (
-    <TouchableOpacity
-      onPress={() => handleItemPress(item)} // Handle the item press
-
-    >
+    <TouchableOpacity onPress={() => handleItemPress(item)}>
       <View style={styles.transactionItem}>
         <Text style={styles.text}>{item.compagnie}</Text>
-        <Text style={styles.text}>{item.destinationTravel}</Text>
-       
+        
+        {/* Map over destinationsTravel array and render each item */}
+        {item.destinationTravel.map((dest, index) => (
+          <View key={index}>
+            <Text style={styles.text}>Destination: {dest.destination}</Text>
+           
+          </View>
+        ))}
+        
+        
       </View>
     </TouchableOpacity>
   )}
-  //onEndReached={handleEndReached}
-  //onEndReachedThreshold={0.1}
 />
 
     </View>

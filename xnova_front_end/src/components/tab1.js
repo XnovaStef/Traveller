@@ -18,7 +18,7 @@ const Navbar1 = () => {
 
   useEffect(() => {
     axios
-      .get("https://xnova-back-end.onrender.com/api/user/countTransaction")
+      .get("https://xnova-back-end-dgb2.onrender.com/api/user/countTransaction")
       .then((response) => {
         setTransactions(response.data.Transactions);
       })

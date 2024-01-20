@@ -35,7 +35,7 @@ export default function ForgotCompany() {
       email: email
     };
 
-    axios.post('https://xnova-back-end.onrender.com/api/company/forgot', data)
+    axios.post('https://xnova-back-end-dgb2.onrender.com/api/company/forgot', data)
       .then((response) => {
         setLoading(false);
         Alert.alert('Votre nouveau mot de passe est: xnova@@');

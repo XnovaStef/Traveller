@@ -1,9 +1,8 @@
-import { StyleSheet, Text, View, Alert, Button, TextInput,TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Alert, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import de l'icône
-import DropDownPicker from 'react-native-dropdown-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
 import RNPickerSelect from "react-native-picker-select";
 
 export default function VoyagesScreen() {
@@ -15,48 +14,60 @@ export default function VoyagesScreen() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [tel, setTel] = useState('');
   const [tarif, setTarif] = useState('');
-  const [numberOfPlaces, setNumberOfPlaces] = useState(0);
-
+  const [numberOfPlaces, setNumberOfPlaces] = useState('');
+  const [tarifTravel, setTarifTravel] = useState(null);
 
   const navigation = useNavigation();
 
   const route = useRoute();
-  const { companyName, companyDestinations } = route.params || {};
-  const firstDestination = companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null;
+  const { companyName, companyDestinations, selectedDestination } = route.params || {};
+  const firstDestination = selectedDestination || (companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null);
 
-  const [selectedDestination, setSelectedDestination] = useState(firstDestination ? firstDestination.destinationTravel : null);
-  const [selectedStation, setSelectedStation] = useState(firstDestination ? firstDestination.gareTravel : null);
-  const defaultTarifTravel = firstDestination ? firstDestination.tarifTravel ?? '' : '';
-
-  const [tarifTravel, setTarifTravel] = useState(defaultTarifTravel);
-
-// Update tariff based on the number of places
-useEffect(() => {
-  const calculatedTarif = numberOfPlaces * parseFloat(defaultTarifTravel);
-  setTarifTravel(isNaN(calculatedTarif) ? '' : calculatedTarif.toString());
-}, [numberOfPlaces, defaultTarifTravel]);
+  useEffect(() => {
+    const numericValue = parseInt(numberOfPlaces, 10);
+    
+    if (!isNaN(numericValue) && numericValue > 0) {
+      const updatedTarif = numericValue * tarifTravel;
+      setTarifTravel(updatedTarif);
+      console.log("value ",numericValue)
+      console.log("value ",tarifTravel)
+    } else {
+      setTarifTravel(null);
+    }
+  }, [numberOfPlaces, tarif]);
+  
   
 
-  
+  useEffect(() => {
+    const tarifValue = selectedDestination?.tarif || (firstDestination ? firstDestination.tarif : '');
+    setTarifTravel(tarifValue);
+  }, [selectedDestination, firstDestination]);
+
   const reservationData = {
     tel: tel,
     nombre_place: numberOfPlaces,
     heure_depart: selectedTime || '',
     compagnie: companyName,
-    destination: selectedDestination,
-    gare: selectedStation,
+    destination: selectedDestination?.destination || firstDestination?.destination || '',
+    gare: selectedDestination?.gare || firstDestination?.gare || '',
     montant: tarifTravel,
   };
 
+  console.log("reservation :", reservationData);
+
+  if (!reservationData.destination || !reservationData.gare) {
+    console.error("Error: Destination and gare are required.");
+    return;
+  }
 
   const handlePayButtonPress = async () => {
     try {
-      const response = await axios.post('https://xnova-back-end.onrender.com/api/user/Travel', reservationData);
+      const response = await axios.post('http://192.168.1.7:3005/api/user/Travel', reservationData);
       console.log('Code de réservation:', response.data.code);
       Alert.alert('Votre code de réservation est:', `Code: ${response.data.code}\nVous êtes prié de vous rendre à la gare pour le paiement avant la date du : ${response.data.codeExpiration}`);
       setShowTicket(true);
     } catch (error) {
-      console.error('Error:', error.message); // Log the detailed error message
+      console.error('Error:', error.message);
       if (error.response) {
         console.error('Erreur de requête :', error.response.data);
         Alert.alert('Réservation non effectuée. Veuillez vérifier le numéro de téléphone.');
@@ -64,11 +75,9 @@ useEffect(() => {
         console.error('Erreur lors de la requête :', error.message);
       }
     }
-    
   };
 
   const handleShowTicketPress = () => {
-    // Actions pour afficher le ticket
     navigation.navigate("Pass");
   };
 
@@ -83,74 +92,71 @@ useEffect(() => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{
-          position: 'absolute',
-          top: 30,
-          left: 20,
-          padding: 10,
-        }}
-      >
-        {/* Utilisation de l'icône de flèche */}
-        <Icon name="arrow-back" size={30} color="#246EC3" />
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            position: 'absolute',
+            top: 30,
+            left: 20,
+            padding: 10,
+          }}
+        >
+          <Icon name="arrow-back" size={30} color="#246EC3" />
+        </TouchableOpacity>
         <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20 }}>Paiement voyage</Text>
       </View>
       <View style={styles.inputsContainer}>
-      <TextInput
-  style={styles.textInput}
-  placeholder="Nombre de places"
-  value={String(numberOfPlaces)}
-  onChangeText={(text) => {
-    const numericValue = parseInt(text);
-    setNumberOfPlaces(isNaN(numericValue) ? 1 : numericValue);
-  }}
-/>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Nombre de places"
+          value={String(numberOfPlaces)}
+          onChangeText={(text) => {
+            const numericValue = parseInt(text);
+            setNumberOfPlaces(isNaN(numericValue) ? 1 : numericValue);
+          }}
+        />
 
-
-<TextInput
+        <TextInput
           style={styles.textInput}
           placeholder="Numéro"
           value={tel}
           onChangeText={setNumeroWithCountryCode}
         />
 
-<TextInput
-  style={styles.textInput}
-  placeholder="Tarif"
-  value={String(tarifTravel)}
-  onChangeText={(text) => {
-    const numericValue = parseFloat(text); // Convert text to number
-    setTarifTravel(isNaN(numericValue) ? '' : numericValue.toString()); // Keep as string or set back to an empty string if not a valid number
-  }}
-  keyboardType="numeric"
-/>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Tarif"
+          value={tarifTravel !== null ? String(tarifTravel) : ''}
+          onChangeText={(text) => {
+            const numericValue = parseFloat(text);
+            setTarifTravel(isNaN(numericValue) ? null : numericValue);
+          }}
+          keyboardType="numeric"
+        />
 
-        {/* DropDown pour les heures de départ */}
         <RNPickerSelect
-onValueChange={(value) => setSelectedTime(value)}
-  items={companyDestinations.map((destination) => ({
-    label: destination.depart,
-    value: destination.depart, // Utiliser la propriété "depart" comme valeur
-  }))}
-  style={pickerSelectStyles}
-/>
+          onValueChange={(value) => setSelectedTime(value)}
+          items={companyDestinations.map((destination) => ({
+            label: destination.depart,
+            value: destination.depart,
+          }))}
+          style={pickerSelectStyles}
+        />
 
-<TouchableOpacity
+        <TouchableOpacity
           onPress={handlePayButtonPress}
-          disabled={paymentCompleted} // Désactive le bouton une fois le paiement effectué
+          disabled={paymentCompleted}
           style={[styles.btn, { backgroundColor: paymentCompleted ? '#CCC' : '#F36210' }]}
         >
           <Text style={{ color: '#fff' }}>Payer</Text>
         </TouchableOpacity>
         <TouchableOpacity
-  onPress={handleShowTicketPress}
-  disabled={!showTicket} // Désactive le bouton tant que le ticket n'est pas disponible
-  style={[styles.btn, { backgroundColor: !showTicket ? '#CCC' : '#F36210', marginTop: 20 }]}
->
-  <Text style={{ color: '#fff' }}>Voir ticket</Text>
-</TouchableOpacity>
+          onPress={handleShowTicketPress}
+          disabled={!showTicket}
+          style={[styles.btn, { backgroundColor: !showTicket ? '#CCC' : '#F36210', marginTop: 20 }]}
+        >
+          <Text style={{ color: '#fff' }}>Voir ticket</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -210,20 +216,20 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 4,
     color: 'black',
-    paddingRight: 30 ,// to ensure the text is never behind the icon
-    backgroundColor : "#fff",
+    paddingRight: 30,
+    backgroundColor: "#fff",
     marginTop: 50,
   },
   inputAndroid: {
-      fontSize: 16,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
-      borderWidth: 0.5,
-      borderColor: '#fff',
-      borderRadius: 8,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-      backgroundColor : "black",
-      marginTop: 50,
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: '#fff',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
+    backgroundColor: "black",
+    marginTop: 50,
   }
 });

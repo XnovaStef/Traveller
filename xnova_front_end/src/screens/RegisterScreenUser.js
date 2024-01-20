@@ -63,7 +63,7 @@ const Login = () =>{
     };
   
     axios
-      .post('https://xnova-back-end.onrender.com/api/user/register', data)
+      .post('https://xnova-back-end-dgb2.onrender.com/api/user/register', data)
       .then((response) => {
         console.log(data);
         console.log(response.data);

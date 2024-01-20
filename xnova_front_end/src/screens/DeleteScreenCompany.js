@@ -28,7 +28,7 @@ export default function DeleteScreenCompany() {
       return;
     }
 
-    axios.post('https://xnova-back-end.onrender.com/api/company/companies/RequestCompany', {
+    axios.post('https://xnova-back-end-dgb2.onrender.com/api/company/companies/RequestCompany', {
       email: email,
       password: password,
       pattern: pattern,
