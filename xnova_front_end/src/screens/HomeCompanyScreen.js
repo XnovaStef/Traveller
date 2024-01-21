@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Navbar1 from '../components/tab1';
 import { StatusBar } from 'expo-status-bar';
 import Nav from '../components/nav';
@@ -17,7 +17,12 @@ export default function HomeCompanyScreen() {
   const flatListRef = useRef(null);
 
 
+  
 
+  const route = useRoute();
+  const { compagnie} = route.params;
+
+  console.log(compagnie)
 
 
   useEffect(() => {
@@ -26,9 +31,9 @@ export default function HomeCompanyScreen() {
       const fetchData = async () => {
         try {
           const [travelInfo, colisInfo, reservationInfo] = await Promise.all([
-            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyTravelInfo?page=${page}`),
-            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyColisInfo?page=${page}`),
-            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyReservationInfo?page=${page}`)
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyTravelInfoCompany/${compagnie}?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyColisInfoCompany/${compagnie}?page=${page}`),
+            axios.get(`https://xnova-back-end-dgb2.onrender.com/api/user/everyReservationInfoCompany/${compagnie}?page=${page}`)
           ]);
           
           const newData = [
@@ -49,7 +54,7 @@ export default function HomeCompanyScreen() {
       };
       fetchData();
     }
-  }, [page]);
+  }, [page, compagnie]);
   
 
 /*
@@ -104,10 +109,12 @@ return (
       renderItem={({ item }) => (
         <View style={styles.transactionItem}>
           <Text style={styles.text}>Nature: {item.nature}</Text>
+          <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
           <Text style={styles.text}>
             Date de Paiement: {item.datePay ? new Date(item.datePay).toLocaleDateString('fr-FR') : 'N/A'}
           </Text>
           <Text style={styles.text}>Gare: {item.gare}</Text>
+          <Text style={styles.text}>Montant: {item.montant} fcfa</Text>
         </View>
       )}
       style={styles.scrolview}

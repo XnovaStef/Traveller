@@ -17,7 +17,8 @@ import axios from 'axios';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function RegisterScreenCompany1() {
-  const [email, setEmail] = useState('');
+  //const [email, setEmail] = useState('');
+  const [compagnie, setCompagnie] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -37,7 +38,7 @@ export default function RegisterScreenCompany1() {
   };
 
   const isNextButtonDisabled = () => {
-    return loading || email === '' || password === '';
+    return loading || compagnie === '' || password === '';
   };
 
   const handleNext = () => {
@@ -47,7 +48,7 @@ export default function RegisterScreenCompany1() {
     setLoading(true);
 
     const data = {
-      email: email,
+      compagnie: compagnie,
       password: password,
     };
 
@@ -58,7 +59,7 @@ export default function RegisterScreenCompany1() {
         AsyncStorage.setItem('token', response.data.accessToken);
         AsyncStorage.setItem('companyId', response.data.companyId);
         setLoading(false);
-        navigation.navigate('HomeCompany');
+        navigation.navigate('HomeCompany', { compagnie: compagnie });
       })
       .catch((error) => {
         setLoading(false);
@@ -77,9 +78,9 @@ export default function RegisterScreenCompany1() {
         <Image style={styles.logo} source={require('../assets/images/logo4.png')} />
         <TextInput
           style={styles.input}
-          value={email}
-          placeholder="Email"
-          onChangeText={(text) => setEmail(text)}
+          value={compagnie}
+          placeholder="Nom compagnie"
+          onChangeText={(text) => setCompagnie(text)}
         />
         <View style={styles.passwordContainer}>
           <TextInput

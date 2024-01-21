@@ -62,7 +62,7 @@ export default function VoyagesScreen() {
 
   const handlePayButtonPress = async () => {
     try {
-      const response = await axios.post('http://192.168.1.7:3005/api/user/Travel', reservationData);
+      const response = await axios.post('https://xnova-back-end-dgb2.onrender.com/api/user/Travel', reservationData);
       console.log('Code de réservation:', response.data.code);
       Alert.alert('Votre code de réservation est:', `Code: ${response.data.code}\nVous êtes prié de vous rendre à la gare pour le paiement avant la date du : ${response.data.codeExpiration}`);
       setShowTicket(true);

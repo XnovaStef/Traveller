@@ -78,11 +78,12 @@ export default function Pop_Up({ selectedDestination, onClose }) {
   };
   const renderSelectedDestination = () => {
     if (selectedDestination) {
-      const { destination, tarif, gare } = selectedDestination;
+      const { destination, tarif, gare, tarifColis } = selectedDestination;
       return (
         <View style={styles.infoContainer}>
           <Text>{`Destination: ${destination || 'N/A'}`}</Text>
           <Text>{`Tarif Travel: ${tarif !== undefined ? tarif : 'N/A'}`}</Text>
+          <Text>{`Tarif Colis: ${tarifColis !== undefined ? tarifColis : 'N/A'}`}</Text>
           <Text>{`Gare: ${gare || 'N/A'}`}</Text>
         </View>
       );
