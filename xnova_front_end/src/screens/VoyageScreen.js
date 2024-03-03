@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View, Alert, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Alert, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
-import RNPickerSelect from "react-native-picker-select";
+import RNPickerSelect from 'react-native-picker-select';
+
+const screenWidth = Dimensions.get('window').width;
 
 export default function VoyagesScreen() {
   const [selectedPlaces, setSelectedPlaces] = useState(null);
@@ -16,6 +18,8 @@ export default function VoyagesScreen() {
   const [tarif, setTarif] = useState('');
   const [numberOfPlaces, setNumberOfPlaces] = useState('');
   const [tarifTravel, setTarifTravel] = useState(null);
+  const [textInput1, setTextInput1] = useState('');
+  const [textInput2, setTextInput2] = useState('');
 
   const navigation = useNavigation();
 
@@ -23,20 +27,19 @@ export default function VoyagesScreen() {
   const { companyName, companyDestinations, selectedDestination } = route.params || {};
   const firstDestination = selectedDestination || (companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null);
 
-  useEffect(() => {
-    const numericValue = parseInt(numberOfPlaces, 10);
-    
-    if (!isNaN(numericValue) && numericValue > 0) {
-      const updatedTarif = numericValue * tarifTravel;
-      setTarifTravel(updatedTarif);
-      console.log("value ",numericValue)
-      console.log("value ",tarifTravel)
-    } else {
-      setTarifTravel(null);
-    }
-  }, [numberOfPlaces, tarif]);
-  
-  
+  const handleTextInput1Change = (value) => {
+    const intValue = parseInt(value, 10);
+    setTextInput1(isNaN(intValue) ? '' : intValue.toString());
+    const newValue = isNaN(intValue) ? 0 : intValue * tarifTravel;
+    setTextInput2(newValue.toString());
+  };
+
+  const handleTextInput2Change = (value) => {
+    const intValue = parseInt(value, 10);
+    setTextInput2(isNaN(intValue) ? '' : intValue.toString());
+    const newValue = isNaN(intValue) ? 0 : intValue * tarifTravel;
+    setTextInput1(newValue.toString());
+  };
 
   useEffect(() => {
     const tarifValue = selectedDestination?.tarif || (firstDestination ? firstDestination.tarif : '');
@@ -45,32 +48,39 @@ export default function VoyagesScreen() {
 
   const reservationData = {
     tel: tel,
-    nombre_place: numberOfPlaces,
+    nombre_place: textInput1,
     heure_depart: selectedTime || '',
     compagnie: companyName,
     destination: selectedDestination?.destination || firstDestination?.destination || '',
     gare: selectedDestination?.gare || firstDestination?.gare || '',
-    montant: tarifTravel,
+    montant: textInput2,
   };
 
-  console.log("reservation :", reservationData);
+  console.log('reservation :', reservationData);
 
   if (!reservationData.destination || !reservationData.gare) {
-    console.error("Error: Destination and gare are required.");
-    return;
+    console.error('Error: Destination and gare are required.');
+    return (
+      <View style={styles.container}>
+        <Text>Error: Destination and gare are required.</Text>
+      </View>
+    );
   }
 
   const handlePayButtonPress = async () => {
     try {
       const response = await axios.post('https://xnova-back-end-dgb2.onrender.com/api/user/Travel', reservationData);
-      console.log('Code de réservation:', response.data.code);
-      Alert.alert('Votre code de réservation est:', `Code: ${response.data.code}\nVous êtes prié de vous rendre à la gare pour le paiement avant la date du : ${response.data.codeExpiration}`);
+      console.log('Code de paiement:', response.data.code);
+      Alert.alert(
+        'Votre code de paiement est:',
+        `Code: ${response.data.code}\nVous pouvez utiliser ce code pour voir votre ticket de voyage drectement sur l'aplication .`
+      );
       setShowTicket(true);
     } catch (error) {
       console.error('Error:', error.message);
       if (error.response) {
         console.error('Erreur de requête :', error.response.data);
-        Alert.alert('Réservation non effectuée. Veuillez vérifier le numéro de téléphone.');
+        Alert.alert("Réservation non effectuée. Veuillez vérifier le numéro de téléphone.");
       } else {
         console.error('Erreur lors de la requête :', error.message);
       }
@@ -78,7 +88,7 @@ export default function VoyagesScreen() {
   };
 
   const handleShowTicketPress = () => {
-    navigation.navigate("Pass");
+    navigation.navigate('Pass');
   };
 
   const setNumeroWithCountryCode = (text) => {
@@ -109,11 +119,8 @@ export default function VoyagesScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Nombre de places"
-          value={String(numberOfPlaces)}
-          onChangeText={(text) => {
-            const numericValue = parseInt(text);
-            setNumberOfPlaces(isNaN(numericValue) ? 1 : numericValue);
-          }}
+          value={textInput1}
+          onChangeText={handleTextInput1Change}
         />
 
         <TextInput
@@ -126,11 +133,8 @@ export default function VoyagesScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Tarif"
-          value={tarifTravel !== null ? String(tarifTravel) : ''}
-          onChangeText={(text) => {
-            const numericValue = parseFloat(text);
-            setTarifTravel(isNaN(numericValue) ? null : numericValue);
-          }}
+          value={textInput2}
+          onChangeText={handleTextInput2Change}
           keyboardType="numeric"
         />
 
@@ -153,7 +157,7 @@ export default function VoyagesScreen() {
         <TouchableOpacity
           onPress={handleShowTicketPress}
           disabled={!showTicket}
-          style={[styles.btn, { backgroundColor: !showTicket ? '#CCC' : '#F36210', marginTop: 20 }]}
+          style={[styles.btn, { backgroundColor: !showTicket ? '#CCC' : '#F36210', marginTop: '5%' }]}
         >
           <Text style={{ color: '#fff' }}>Voir ticket</Text>
         </TouchableOpacity>
@@ -177,12 +181,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 100,
+    paddingHorizontal: '5%',
+    marginTop: '5%',
+    marginBottom: '10%',
   },
   btn: {
-    width: 100,
+    width: screenWidth > 600 ? '50%' : '70%',
     height: 40,
     backgroundColor: '#F36210',
     top: 100,
@@ -195,12 +199,12 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   textInput: {
-    width: 340,
+    width: screenWidth > 600 ? '70%' : '90%',
     height: 50,
     borderColor: '#fff',
     borderWidth: 1,
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: '5%',
     top: 30,
     backgroundColor: '#fff',
     left: 5,
@@ -218,7 +222,7 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: 30,
     backgroundColor: "#fff",
-    marginTop: 50,
+    marginTop: '5%',
   },
   inputAndroid: {
     fontSize: 16,
@@ -229,7 +233,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 8,
     color: 'black',
     paddingRight: 30,
-    backgroundColor: "black",
-    marginTop: 50,
-  }
+    backgroundColor: "#fff",
+    marginTop: '5%',
+  },
 });

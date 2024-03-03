@@ -68,7 +68,7 @@ export default function ForgotCompany() {
       </TouchableOpacity>
           <Image
             style={styles.logo}
-            source={require('../assets/images/logo3.png')}
+            source={require('../assets/images/logo4.png')}
           />
 
           <KeyboardAvoidingView

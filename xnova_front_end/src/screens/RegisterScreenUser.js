@@ -45,6 +45,14 @@ const Login = () =>{
     Keyboard.dismiss();
   };
 
+  const setNumeroWithCountryCode = (text) => {
+    if (text.startsWith('+225')) {
+      setTel(text);
+    } else {
+      setTel('+225' + text);
+    }
+  };
+
   const handleRegistration = async () => {
     // Vérifier si les mots de passe correspondent
     if (password !== confirmPassword) {
@@ -114,23 +122,14 @@ const Login = () =>{
             onChangeText={setOccupation}
             placeholderTextColor="#AAA1A1"
           />
-          <PhoneInput
-            defaultValue={value}
-            defaultCode="CI"
-            onChangeText={(text) => {
-              setValue(text);
-              setTel(text);
-            }}
-            onChangeFormattedText={(text) => {
-              setTel(text);
-            }}
-            withDarkTheme
-            withShadow
-            containerStyle={styles.TextInput1}
-            textContainerStyle={{ backgroundColor: '#fff', color: 'grey' }}
+         <TextInput
+            style={styles.TextInput}
+            underlineColorAndroid="transparent"
             placeholder="Numéro"
-            textInputStyle={{ color: '#000' }}
-            codeTextStyle={{ color: '#AAA1A1' }}
+            value={tel}
+            onChangeText={setNumeroWithCountryCode}
+            placeholderTextColor="#AAA1A1"
+            keyboardType='numeric'
           />
           <TextInput
             style={styles.TextInput}
@@ -197,7 +196,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     backgroundColor: '#fff',
-    fontSize: 15,
+    //fontSize: 10,
     paddingHorizontal: 5,
     borderColor: '#fff',
     top: 50,

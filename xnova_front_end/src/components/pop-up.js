@@ -82,8 +82,8 @@ export default function Pop_Up({ selectedDestination, onClose }) {
       return (
         <View style={styles.infoContainer}>
           <Text>{`Destination: ${destination || 'N/A'}`}</Text>
-          <Text>{`Tarif Travel: ${tarif !== undefined ? tarif : 'N/A'}`}</Text>
-          <Text>{`Tarif Colis: ${tarifColis !== undefined ? tarifColis : 'N/A'}`}</Text>
+          <Text>{`Tarif: ${tarif !== undefined ? tarif : 'N/A'}`} Fcfa</Text>
+          <Text>{`Colis: ${tarifColis !== undefined ? tarifColis : 'N/A'}`}</Text>
           <Text>{`Gare: ${gare || 'N/A'}`}</Text>
         </View>
       );
@@ -107,11 +107,7 @@ export default function Pop_Up({ selectedDestination, onClose }) {
           <View style={styles.infoContainer}>
           {renderSelectedDestination()}
           </View>
-
-          {/* Button to open Google Maps */}
-          <TouchableOpacity style={styles.mapbutton} onPress={openGoogleMaps}>
-            <Ionicons name="add" size={30} color="black" />
-          </TouchableOpacity>
+          
 
           <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
             <Text style={styles.checkboxText}>continuer</Text>

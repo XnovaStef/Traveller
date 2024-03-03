@@ -1,9 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  Dimensions,
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Pop_Up from '../components/pop-up';
+
+const { height, width } = Dimensions.get('window');
 
 export default function Filter() {
   const [destinationFilter, setDestinationFilter] = useState('');
@@ -19,16 +30,13 @@ export default function Filter() {
   useEffect(() => {
     const fetchData = async () => {
       if (route && route.params) {
-        const { companyName, companyDestinations,  } = route.params;
-  
-        // Update states with routed information
+        const { companyName, companyDestinations } = route.params;
+
         setCompanyName(companyName);
         setCompanyDestinations(companyDestinations);
-  
-        // Wait for the data to be loaded
-        await new Promise(resolve => setTimeout(resolve, 0));
-  
-        // Extract and display tarifTravel
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
         companyDestinations.forEach((destination) => {
           destination.destinationTravel.forEach((dest) => {
             const tarif = dest.Travel !== undefined ? dest.Travel : 'N/A';
@@ -39,54 +47,42 @@ export default function Filter() {
         });
       }
     };
-  
+
     fetchData();
   }, [route]);
-  
 
-  // Add these logs to help debug
-console.log('companyDestinations:', companyDestinations);
-console.log('filteredDestinations:', filteredDestinations);
-
-
-
-const handleOptionPress = (destination) => {
-  console.log('Selected destination:', destination);
-  setSelectedDestination(destination);
-  setShowModal(true);
-};
-
-
+  const handleOptionPress = (destination) => {
+    setSelectedDestination(destination);
+    setShowModal(true);
+  };
 
   const closeModal = () => {
     setShowModal(false);
   };
 
   const filteredDestinations = companyDestinations.flatMap((item) =>
-  item.destinationTravel.filter((destination) => {
-    const destinationText = destination?.destination || '';
-    const isDestinationMatched = !destinationFilter || destinationText.toLowerCase().includes(destinationFilter.toLowerCase());
-    return isDestinationMatched;
-  })
-);
-
-  
-  
-  
+    item.destinationTravel.filter((destination) => {
+      const destinationText = destination?.destination || '';
+      const isDestinationMatched =
+        !destinationFilter ||
+        destinationText.toLowerCase().includes(destinationFilter.toLowerCase());
+      return isDestinationMatched;
+    })
+  );
 
   return (
     <View style={styles.global}>
-      <StatusBar style='dark' />
+      <StatusBar style="dark" />
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={{
           position: 'absolute',
-          top: 0,
-          left: 5,
-          padding: 10,
+          top: height * 0.02,
+          left: width * 0.02,
+          padding: width * 0.03,
         }}
       >
-        <Ionicons name="arrow-back" size={30} color="white" />
+        <Ionicons name="arrow-back" size={width * 0.08} color="white" />
       </TouchableOpacity>
       <View>
         <Text style={styles.companyName}>{companyName}</Text>
@@ -118,14 +114,14 @@ const handleOptionPress = (destination) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-          {selectedDestination && (
+            {selectedDestination && (
               <>
                 <Pop_Up
                   selectedDestination={selectedDestination}
                   onClose={() => setShowModal(false)}
                 />
                 <TouchableOpacity style={styles.closeIcon} onPress={closeModal}>
-                  <Ionicons name="close" size={24} color="black" />
+                  <Ionicons name="close" size={width * 0.05} color="black" />
                 </TouchableOpacity>
               </>
             )}
@@ -139,24 +135,24 @@ const handleOptionPress = (destination) => {
 const styles = StyleSheet.create({
   global: {
     flex: 1,
-    padding: 10,
-    marginTop: 40,
+    padding: width * 0.02,
+    marginTop: height * 0.02,
     backgroundColor: '#246EC3',
   },
   companyName: {
-    fontSize: 45,
-    color: "#fff",
+    fontSize: width * 0.12,
+    color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   searchBar: {
-    height: 40,
+    height: height * 0.05,
     width: '90%',
-    borderRadius: 15,
+    borderRadius: width * 0.05,
     backgroundColor: '#fff',
     color: '#000',
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    paddingHorizontal: width * 0.02,
+    marginBottom: height * 0.01,
     shadowOpacity: 0.5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -166,11 +162,11 @@ const styles = StyleSheet.create({
   transactionItem: {
     backgroundColor: '#F36210',
     borderWidth: 0,
-    borderRadius: 70,
-    padding: 10,
-    marginVertical: 5,
+    borderRadius: width * 0.35,
+    padding: width * 0.03,
+    marginVertical: height * 0.005,
     width: '80%',
-    height: 130,
+    height: height * 0.2,
     marginLeft: 'auto',
     marginRight: 'auto',
     shadowOpacity: 0.5,
@@ -182,8 +178,8 @@ const styles = StyleSheet.create({
     color: '#246EC3',
     fontWeight: 'bold',
     textAlign: 'center',
-    padding: 20,
-    fontSize: 15,
+    padding: height * 0.04,
+    fontSize: width * 0.04,
   },
   modalContainer: {
     flex: 1,
@@ -193,14 +189,14 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
+    padding: width * 0.04,
+    borderRadius: width * 0.04,
     alignItems: 'center',
-    height: 500,
+    height: height * 0.6,
   },
   closeIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: height * 0.01,
+    right: width * 0.02,
   },
 });

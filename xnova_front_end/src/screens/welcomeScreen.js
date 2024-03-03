@@ -105,17 +105,10 @@ const styles = StyleSheet.create({
     fontSize: windowWidth * 0.05,
     fontWeight: 'bold',
     color: 'white',
-    marginTop: buttonHeight * 0.30,
+    marginTop: buttonHeight * 0.10,
   },
   help: {
-    backgroundColor: '#F36210',
-    width: buttonWidth * 1.2,
-    height: buttonHeight * 1.5,
-    marginTop: buttonMarginTop * 1.2,
-    shadowOpacity: 0.5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
+   
   },
   registerButton: {
     backgroundColor: '#F36210',

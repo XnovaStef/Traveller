@@ -1,9 +1,18 @@
-import { Dimensions, StyleSheet, Text, View, Alert, Button, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import axios from 'axios';
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,8 +35,8 @@ export default function ReservScreen() {
     nombre_place: parseInt(selectedPlaces),
     heure_depart: selectedTime || '',
     compagnie: companyName,
-    destination: selectedDestination?.destination || firstDestination?.destination || '', // Ensure a value is provided
-    gare: selectedDestination?.gare || firstDestination?.gare || '', // Ensure a value is provided
+    destination: selectedDestination?.destination || firstDestination?.destination || '',
+    gare: selectedDestination?.gare || firstDestination?.gare || '',
   };
 
   const Reservation = async () => {
@@ -40,9 +49,8 @@ export default function ReservScreen() {
       setIsReservationDisabled(true);
     } catch (error) {
       if (error.response) {
-        console.error('Erreur de requête :', error.response.data);
         Alert.alert('Réservation non effectuée. Veuillez vérifier le numéro de téléphone.');
-      } else {
+      } else {ww
         console.error('Erreur lors de la requête :', error.message);
       }
     }
@@ -97,17 +105,20 @@ export default function ReservScreen() {
           }))}
           style={styles.pickerSelect}
         />
-        <View style={styles.btn}>
-          <Button
-            title="Réserver"
-            onPress={Reservation}
-            disabled={isReservationDisabled}
-          />
-        </View>
+        <TouchableOpacity
+          style={[styles.btn, { opacity: isReservationDisabled ? 0.5 : 1 }]}
+          onPress={Reservation}
+          disabled={isReservationDisabled}
+        >
+          <Text style={{ color: '#fff' }}>Réserver</Text>
+        </TouchableOpacity>
         {showTicketButton && (
-          <View style={styles.btn1}>
-            <Button title="Voir Ticket" onPress={handleViewTicketPress} />
-          </View>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={handleViewTicketPress}
+          >
+            <Text style={{ color: '#fff' }}>Voir Ticket</Text>
+          </TouchableOpacity>
         )}
       </View>
     </View>
@@ -145,19 +156,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
-  },
-  btn1: {
-    width: width * 0.3,
-    height: height * 0.05,
-    backgroundColor: '#F36210',
-    top: height * 0.13,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    shadowOpacity: 0.5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
+    marginBottom: height * 0.02,
   },
   textInput: {
     width: width * 0.85,
@@ -165,7 +164,7 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderWidth: 1,
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: height * 0.02,
     top: height * 0.03,
     backgroundColor: '#fff',
     left: 2,
@@ -201,4 +200,3 @@ const styles = StyleSheet.create({
     },
   },
 });
-

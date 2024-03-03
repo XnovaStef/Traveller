@@ -1,4 +1,3 @@
-import { StatusBar, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -7,7 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Platform,
+  Dimensions,
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
@@ -15,7 +14,6 @@ import {
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Contacts from 'react-native-contacts';
 import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
@@ -23,12 +21,10 @@ const windowWidth = Dimensions.get('window').width;
 export default function ColisScreen() {
   const [textInput1, setTextInput1] = useState('');
   const [textInput2, setTextInput2] = useState('');
-  const [textInput3, setTextInput3] = useState('');
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
-  const [tel, setTel] = useState('')
-  const [destinataire, setDestinataire] = useState('')
-
+  const [tel, setTel] = useState('');
+  const [destinataire, setDestinataire] = useState('');
 
   const navigation = useNavigation();
 
@@ -37,13 +33,9 @@ export default function ColisScreen() {
   const firstDestination = selectedDestination || (companyDestinations && companyDestinations.length > 0 ? companyDestinations[0] : null);
 
   useEffect(() => {
-    // Logique pour récupérer le tarif de la destination sélectionnée
     const tarifColisValue = selectedDestination?.tarifColis || (firstDestination ? firstDestination.tarifColis : '');
-  
-    // Mettez à jour l'état tarifColis avec la valeur récupérée
     setTarifColis(tarifColisValue);
   }, [selectedDestination, firstDestination]);
-  
 
   const [tarifColis, setTarifColis] = useState('');
 
@@ -54,21 +46,20 @@ export default function ColisScreen() {
     gare: selectedDestination?.gare || firstDestination?.gare || '',
     montant: textInput2,
     valeur_colis: textInput1,
-    tel_destinataire: destinataire
+    tel_destinataire: destinataire,
   };
 
-  console.log("reservation:", reservationData)
-  console.log("colis:", tarifColis)
-
+  console.log('reservation:', reservationData);
+  console.log('colis:', tarifColis);
 
   const handlePayButtonPress = async () => {
     try {
       const response = await axios.post('https://xnova-back-end-dgb2.onrender.com/api/user/Colis', reservationData);
-      console.log('Code de réservation:', response.data.code);
-      Alert.alert('Votre code de paiement est:', `Code: ${response.data.code}`);
+      console.log('Code de paiement:', response.data.code);
+      Alert.alert('Votre code de paiement est:', `Code: ${response.data.code}\nVous pouvez déposer votre colis à la gare .`);
       setShowTicket(true);
     } catch (error) {
-      console.error('Error:', error.message); // Log the detailed error message
+      console.error('Error:', error.message);
       if (error.response) {
         console.error('Erreur de requête :', error.response.data);
         Alert.alert('Paiement non effectuée. Veuillez vérifier le numéro de téléphone.');
@@ -78,7 +69,6 @@ export default function ColisScreen() {
       }
     }
   };
-  
 
   const handleShowTicketPress = () => {
     navigation.navigate('Pass');
@@ -86,18 +76,17 @@ export default function ColisScreen() {
 
   const handleTextInput1Change = (value) => {
     const intValue = parseInt(value, 10);
-    setTextInput1(intValue.toString()); // Set the input as a string to display in the TextInput
-    const newValue = intValue * tarifColis; // Ensure both values are integers
+    setTextInput1(isNaN(intValue) ? '' : intValue.toString());
+    const newValue = isNaN(intValue) ? 0 : intValue * tarifColis;
     setTextInput2(newValue.toString());
   };
-  
+
   const handleTextInput2Change = (value) => {
     const intValue = parseInt(value, 10);
-    setTextInput2(intValue.toString()); // Set the input as a string to display in the TextInput
-    const newValue = intValue * tarifColis; // Ensure both values are integers
+    setTextInput2(isNaN(intValue) ? '' : intValue.toString());
+    const newValue = isNaN(intValue) ? 0 : intValue * tarifColis;
     setTextInput1(newValue.toString());
   };
-  
 
   const setNumeroWithCountryCode = (text) => {
     if (text.startsWith('+225')) {
@@ -128,9 +117,9 @@ export default function ColisScreen() {
               padding: 10,
             }}
           >
-            <Icon name="arrow-back" size={35} color="#246EC3" />
+            <Icon name="arrow-back" size={windowWidth > 600 ? 40 : 35} color="#246EC3" />
           </TouchableOpacity>
-          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 30 }}>Paiement colis</Text>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: windowWidth > 600 ? 40 : 30 }}>Paiement colis</Text>
         </View>
         <View style={styles.inputsContainer}>
           <TextInput
@@ -169,7 +158,7 @@ export default function ColisScreen() {
               styles.btn,
               {
                 backgroundColor: paymentCompleted ? '#CCC' : '#F36210',
-                width: windowWidth * 0.4,
+                width: windowWidth > 600 ? windowWidth * 0.4 : '80%',
               },
             ]}
           >
@@ -182,8 +171,8 @@ export default function ColisScreen() {
               styles.btn,
               {
                 backgroundColor: !showTicket ? '#CCC' : '#F36210',
-                marginTop: 20,
-                width: windowWidth * 0.4,
+                marginTop: windowWidth > 600 ? 20 : 10,
+                width: windowWidth > 600 ? windowWidth * 0.4 : '80%',
               },
             ]}
           >
@@ -210,20 +199,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: windowWidth > 600 ? 20 : 10,
   },
   input: {
     width: '100%',
-    height: 60,
+    height: windowWidth > 600 ? 60 : 50,
     borderColor: '#F36210',
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: windowWidth > 600 ? 10 : 5,
     paddingHorizontal: 10,
     backgroundColor: '#F36210',
-    fontSize: 15,
+    fontSize: windowWidth > 600 ? 15 : 13,
   },
   btn: {
-    height: 40,
+    height: windowWidth > 600 ? 40 : 35,
     backgroundColor: '#F36210',
     justifyContent: 'center',
     alignItems: 'center',
@@ -232,6 +221,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
-    marginBottom: 20,
+    marginBottom: windowWidth > 600 ? 20 : 10,
   },
 });

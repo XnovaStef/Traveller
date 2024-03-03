@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   textInput1: {
     marginTop: '10%',
     width: '80%',
-    height: 50,
+    height: 70,
     borderWidth: 1,
     backgroundColor: '#fff',
     fontSize: 20,

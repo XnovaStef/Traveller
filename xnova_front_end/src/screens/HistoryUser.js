@@ -174,7 +174,7 @@ export default function HistoryScreen() {
             </Text>
             <Text style={styles.text}>Gare: {item.gare}</Text>
             <Text style={styles.text}>Compagnie: {item.compagnie}</Text>
-            <Text style={styles.text}>Montant: {item.montant}</Text>
+            <Text style={styles.text}>Montant: {item.montant} Fcfa</Text>
             <Text style={styles.text}>Code: {item.code}</Text>
             <Text style={styles.text}>Nombre de place: {item.nombre_place}</Text>
           </View>

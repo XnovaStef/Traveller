@@ -67,19 +67,12 @@ export default function ProfilScreen() {
             <Animatable.View animation="lightSpeedIn" duration={1500}>
               <ListItem
                 title="Déconnexion"
-                leading={<Icon name="account" size={24} />}
+                leading={<Icon name="power" size={24} />}
                 trailing={props => <Icon name="chevron-right" {...props} />}
                 onPress={ ()=> navigation.navigate('welcome')}
               />
             </Animatable.View>
-            <Animatable.View animation="lightSpeedIn" duration={2000}>
-              <ListItem
-                title="Suppression"
-                leading={<Icon name="delete" size={24} />}
-                trailing={props => <Icon name="chevron-right" {...props} />}
-                onPress={Delete}
-              />
-            </Animatable.View>
+           
             <TouchableOpacity style={styles.Button} onPress={Reservation}>
               <Animatable.View animation="lightSpeedIn" duration={2500}>
                 <Text style={{ fontWeight: 'bold', alignSelf: 'center', textAlign: 'center', padding: 6 }}>Retour</Text>

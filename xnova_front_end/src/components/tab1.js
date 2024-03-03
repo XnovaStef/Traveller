@@ -12,7 +12,7 @@ const Navbar1 = () => {
 
   const iconData = [
     { name: 'heart', color: '#000', screenName: 'note', label: 'note' },
-    { name: 'home', color: '#000', screenName: 'HomeCompany', label: 'home' },
+    //{ name: 'home', color: '#000', screenName: 'HomeCompany', label: 'home' },
     { name: 'bar-chart-2', color: '#000', screenName: 'Statistic', label: 'statistique' },
   ];
 

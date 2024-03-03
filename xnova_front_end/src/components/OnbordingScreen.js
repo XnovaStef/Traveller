@@ -21,20 +21,20 @@ const COLORS = {primary: '#111E26', white: '#fff', black: '#000', blue:'#246EC3'
 const slides = [
   {
     id: '1',
-    image: require('../assets/images/login.png'),
-    title: 'Connectez vous & \n Choisissez un réseau',
+    image: require('../assets/images/register.jpg'),
+    title: 'Inscrivez sur l\'application \n en entrant vos informations',
     subtitle: 'La première étape consiste à se connecter et \n choisir un réseau mobile.',
   },
   {
     id: '2',
-    image: require('../assets/images/register.jpg'),
-    title: 'Regarder des vidéos & \n et gagner des données mobile',
+    image: require('../assets/images/login.png'),
+    title: 'Connectez vous à votre compte',
     subtitle: 'Chaque vidéo publicitaire \n que vous regardez vous rapporte des données gratuite',
   },
   {
     id: '3',
     image: require('../assets/images/login.png'),
-    title: 'Regarder des vidéos & \n et gagner des données mobile',
+    title: 'Choisissez une compagnie et faire \n votre transaction en toute sécurité',
     subtitle: 'Chaque vidéo publicitaire \n que vous regardez vous rapporte des données gratuite',
   },
   

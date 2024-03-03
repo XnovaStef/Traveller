@@ -1,21 +1,38 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
-import * as Animatable from "react-native-animatable"; // Import the Animatable library
+import { BlurView } from 'expo-blur';
+import * as Animatable from "react-native-animatable";
 
 const windowWidth = Dimensions.get("window").width;
 
-const ServiceBox = ({ serviceLabel, serviceImage, onPress }) => {
+const ServiceBox = ({ serviceLabel, serviceImage, onPress, disabled }) => {
   const boxSize = windowWidth * 0.32;
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Animatable.View // Wrap the container with Animatable.View
-        animation="zoomIn" // Apply zooming entrance animation
-        duration={3000} // Animation duration in milliseconds
-        style={[styles.container, { width: boxSize, height: boxSize }]}
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <Animatable.View
+        animation="zoomIn"
+        duration={3000}
+        style={[
+          styles.container,
+          { width: boxSize, height: boxSize },
+          disabled && styles.disabledContainer,
+        ]}
       >
-        <Image source={serviceImage} style={styles.image} />
-        <Text style={styles.label}>{serviceLabel}</Text>
+        {disabled ? (
+          <BlurView
+            style={styles.image}
+            intensity={5} // Adjust intensity as needed
+            tint="light" // Adjust tint as needed
+          >
+            <Image source={serviceImage} style={styles.image} />
+          </BlurView>
+        ) : (
+          <Image source={serviceImage} style={styles.image} />
+        )}
+        <Text style={[styles.label, disabled && styles.disabledLabel]}>
+          {serviceLabel}
+        </Text>
       </Animatable.View>
     </TouchableOpacity>
   );
@@ -33,6 +50,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
   },
+  disabledContainer: {
+    backgroundColor: "#ccc", // Change the background color to indicate disabled state
+  },
   image: {
     height: "80%",
     aspectRatio: 1,
@@ -44,6 +64,9 @@ const styles = StyleSheet.create({
     color: "#246EC3",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  disabledLabel: {
+    color: "#888", // Change the text color to indicate disabled state
   },
 });
 

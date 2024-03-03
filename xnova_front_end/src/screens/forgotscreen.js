@@ -66,7 +66,7 @@ export default function ForgotScreen() {
         {/* Utilisation de l'icône de flèche */}
         <Icon name="arrow-back" size={30} color="#000" />
       </TouchableOpacity>
-        <Image style={{ width: 150, height: 80, marginHorizontal: '40%', marginTop: 70 }} source={require('../assets/images/logo3.png')} />
+        <Image style={{ width: 150, height: 80, marginHorizontal: '40%', marginTop: 70 }} source={require('../assets/images/logo4.png')} />
 
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enabled>
           <PhoneInput

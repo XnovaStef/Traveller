@@ -97,14 +97,8 @@ export default function ProfilScreen(){
                 onPress={ ()=> navigation.navigate('welcome')}
 
             /> 
-            <ListItem
-                title="Suppression"
-                leading={<Icon name="delete" size={24} />}
-                trailing={props => <Icon name="chevron-right" {...props} />}
-                onPress={ ()=> navigation.navigate('DeleteCompany')}
-
-            />            
-            <TouchableOpacity  style = {styles.Button}onPress={HomeCompagny} >
+                    
+            <TouchableOpacity  style = {styles.Button} onPress={() => navigation.goBack()}>
                 <Text style = {{fontWeight:'bold', alignSelf:'center',textAlign:'center',padding:6} } >Retour</Text>
               </TouchableOpacity>
             </View>

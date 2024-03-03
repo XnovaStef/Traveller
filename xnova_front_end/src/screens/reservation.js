@@ -1,15 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View, ScrollView,Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, View, ScrollView,Alert, TouchableOpacity } from 'react-native';
 import 'react-native-gesture-handler';
 import Navbar from '../components/tab';
 import CountryPicker from 'react-native-country-picker-modal';
 import ServiceBox from '../components/ServicesBox';
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+
 
 
 
@@ -37,6 +37,11 @@ export default function Reservation() {
       .catch(error => console.log(error));
   }, []);
 
+  const handleGoBack = () => {
+    // Utilisez la fonction goBack de la navigation pour revenir à la page précédente
+    navigation.goBack();
+  };
+
   
 
 const [countryCode, setCountryCode] = useState('CI');
@@ -46,14 +51,12 @@ const [searchQuery, setSearchQuery] = useState('');
 
 
 const services = [
-    { label: "Voyages", image: require('../assets/images/Voyages.jpg'), action: () => navigation.navigate("FilterUser") },
-    { label: "Location", image: require('../assets/images/Location.jpg'), action: () => navigation.navigate("Location")  },
-    { label: "Colis", image: require('../assets/images/pay.jpg'), action: () =>Alert.alert('Service non disponible')  },
-    { label: "VTC", image: require('../assets/images/VTC.jpg'), action: () => navigation.navigate("Cocar")  },
-    { label: "Avis", image: require('../assets/images/rating.jpg'), action: () => navigation.navigate("Rating")  },
-
-    
-  ];
+  { label: "Voyages", image: require('../assets/images/Voyages.jpg'), action: () => navigation.navigate("FilterUser"), disabled: false },
+  { label: "Location",  action: () => navigation.navigate("Location"), disabled: true },
+  { label: "Colis",  action: () => Alert.alert('Service non disponible'), disabled: true },
+  { label: "VTC",  action: () => navigation.navigate("Cocar"), disabled: true },
+  { label: "Avis", action: () => navigation.navigate("Rating"), disabled: true },
+];
 
   const navigation = useNavigation();
 
@@ -70,7 +73,19 @@ const services = [
     <View>
     <StatusBar style='light' />
 
+    <TouchableOpacity
+          style={ {position: 'absolute',
+          top: 70,
+          left: 10,
+          zIndex: 1,} }
+          onPress={handleGoBack}
+          
+        >
+          <Icon name="arrow-left" size={30} color="white" />
+        </TouchableOpacity>
+
     <View style={styles.header}>
+
           
         </View>
         <View style={styles.search}>
@@ -84,15 +99,13 @@ const services = [
 
           <View style={styles.serviceRow}>
             {filteredServices.map(service => (
-              <ServiceBox
-              
-                key={service.label}
-                serviceLabel={service.label}
-                serviceImage={service.image}
-                onPress={service.action}
-                
-                
-              />
+             <ServiceBox
+             key={service.label}
+             serviceLabel={service.label}
+             serviceImage={service.image}
+             onPress={service.action}
+             disabled={service.disabled}
+           />
             ))}
           </View>
         </ScrollView>

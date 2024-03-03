@@ -37,7 +37,7 @@ const Nav = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.avatarContainer} onPress={() => navigation.navigate('HomeCompany')}>
+      <TouchableOpacity style={styles.avatarContainer} onPress={() => navigation.goBack()}>
       <Avatar image={logo ? { uri: logo } : null} />
 
         <Text style={styles.userName}>{compagnie}</Text>

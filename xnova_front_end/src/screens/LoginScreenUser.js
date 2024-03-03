@@ -1,5 +1,5 @@
 import { StatusBar, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Image,Alert } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { useNavigation } from '@react-navigation/native';
@@ -16,8 +16,11 @@ export default function LoginUser() {
   const [showPassword, setShowPassword] = useState(false); 
   const [isLoggedIn, setIsLoggedIn] = useState(false); // État pour contrôler la connexion
   const [showRatingPopup, setShowRatingPopup] = useState(false); // État pour afficher la pop-up
+  const [imageSize, setImageSize] = useState({ width: 200, height: 120 });
 
   const navigation = useNavigation(); 
+
+  
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -39,6 +42,14 @@ export default function LoginUser() {
     Keyboard.dismiss();
   };
 
+
+  const setNumeroWithCountryCode = (text) => {
+    if (text.startsWith('+225')) {
+      setTel(text);
+    } else {
+      setTel('+225' + text);
+    }
+  };
   
 
 
@@ -71,35 +82,53 @@ export default function LoginUser() {
 
   
   
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setNewImageSize(150); // Ajustez la taille en conséquence
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setNewImageSize(200); // Ajustez la taille en conséquence
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  const setNewImageSize = (size) => {
+    setImageSize({ width: size, height: size });
+  };
+  
 
 
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        <Image style={{  width: 200, height: 120, marginHorizontal: '40%', top: '-10%' }} source={require('../assets/images/logo4.png')} />
+      <Image
+          style={{ ...styles.logo, ...imageSize }}
+          source={require('../assets/images/logo4.png')}
+        />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           enabled
         >
-          <PhoneInput
-            defaultValue={value}
-            defaultCode="CI"
-            onChangeText={(text) => {
-              setValue(text);
-              setTel(text);
-              setEnter(text);
-            }}
-            onChangeFormattedText={(text) => {
-              setTel(text);
-            }}
-            withDarkTheme
-            withShadow
-            containerStyle={styles.TextInput}
-            textContainerStyle={{ backgroundColor: '#fff', color: 'white' }}
+          <TextInput
+            style={styles.TextInput1}
+            underlineColorAndroid="transparent"
             placeholder="Numéro"
-            textInputStyle={{ color: "#000" }}
-            codeTextStyle={{ color: '#AAA1A1' }}
+            value={tel}
+            onChangeText={setNumeroWithCountryCode}
+            placeholderTextColor="#AAA1A1"
+            keyboardType='numeric'
           />
 
 
@@ -173,7 +202,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontSize: 15,
     paddingHorizontal: 30,
-    borderColor: '#fff'
+    borderColor: '#fff',
+    marginTop: '13%',
   },
   forgot: {
     top: -70,
